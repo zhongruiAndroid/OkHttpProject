@@ -14,10 +14,38 @@ import okhttp3.Response;
  *   created by android on 2019/9/19
  */
 public class OkHttpTool {
-    public static <T> void request(String url,MyCallback<T> callback){
-        OkHttpClient client=new OkHttpClient();
+    private static OkHttpTool singleObj;
+    private OkHttpClient okHttpClient;
+    private OkHttpTool() {
+        okHttpClient=new OkHttpClient();
+    }
+    public static OkHttpTool get(){
+        if(singleObj==null){
+            synchronized (OkHttpTool.class){
+                if(singleObj==null){
+                    singleObj=new OkHttpTool();
+                }
+            }
+        }
+        return singleObj;
+    }
+    public <T> void request(String url,MyCallback<T> callback){
         Request.Builder builder = new Request.Builder();
-        builder.get().url(url);
-        client.newCall(builder.build()).enqueue(callback);
+        builder.url(url);
+        Call call = okHttpClient.newCall(builder.build());
+        call.enqueue(callback);
+    }
+
+    public <T> void request2(String url,MyCallback<T> callback){
+        Request.Builder builder = new Request.Builder();
+        builder.url(url);
+        okHttpClient.newCall(builder.build()).enqueue(callback);
+    }
+
+    public <T> void requestImage(String url,TheOkHttpCallback<T> callback){
+        Request.Builder builder = new Request.Builder();
+        builder.url(url);
+        Call call = okHttpClient.newCall(builder.build());
+        call.enqueue(callback);
     }
 }

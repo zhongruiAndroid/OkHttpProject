@@ -14,9 +14,10 @@ import java.lang.reflect.Type;
 /***
  *   created by android on 2019/9/19
  */
-public abstract class MyCallback<T> extends TheOkHttpCallback {
+public abstract class MyCallback<T> extends TheOkHttpCallback<String> {
     public abstract void success(T response);
     public abstract void error(Exception e);
+
     @Override
     public void response(String response) {
         Type type = getSuperclassTypeParameter(getClass());
