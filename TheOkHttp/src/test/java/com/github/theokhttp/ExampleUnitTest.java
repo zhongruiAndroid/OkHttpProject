@@ -1,6 +1,13 @@
 package com.github.theokhttp;
 
+import android.net.Uri;
+
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -13,5 +20,9 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
+    }
+    @Test
+    public void sdf() {
+
     }
 }

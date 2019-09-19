@@ -11,13 +11,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.github.theokhttp.TheOk;
 import com.github.theokhttp.TheOkHttpCallback;
 import com.google.gson.Gson;
 import com.test.okhttp.bean.BaseBean;
 import com.test.okhttp.bean.TabDataRes;
 
-import java.io.InputStream;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -47,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void postImage() {
         String url="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1568891094290&di=4ebd1969fe5c790f42febb4ba4f1e6d6&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201305%2F26%2F20130526140022_5fMJe.jpeg";
-        OkHttpTool.get().requestImage(url, new TheOkHttpCallback<BaseBean>() {
+        OkHttpTool.getClient().requestImage(url, new TheOkHttpCallback<BaseBean>() {
             @Override
             public void response(BaseBean response) {
                 Bitmap bitmap = BitmapFactory.decodeStream(null);
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 for (int i = 0; i < 20; i++) {
                     String url="https://wanandroid.com/wxarticle/chapters/json";
                     int finalI = i;
-                    OkHttpTool.get().request(url, new MyCallback<BaseBean<List<TabDataRes>>>() {
+                    OkHttpTool.getClient().request(url, new MyCallback<BaseBean<List<TabDataRes>>>() {
                         @Override
                         public void success(BaseBean<List<TabDataRes>> data) {
                             boolean b = Looper.getMainLooper() == Looper.myLooper();
@@ -98,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 for (int i = 0; i < 20; i++) {
                     String url="https://wanandroid.com/article/listproject/0/json";
-                    OkHttpTool.get().request(url, new MyCallback<String>() {
+                    OkHttpTool.getClient().request(url, new MyCallback<String>() {
                         @Override
                         public void success(String data) {
                             boolean b = Looper.getMainLooper() == Looper.myLooper();

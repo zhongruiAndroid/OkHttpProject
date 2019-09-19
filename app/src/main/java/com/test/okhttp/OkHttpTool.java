@@ -6,8 +6,11 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /***
@@ -19,7 +22,13 @@ public class OkHttpTool {
     private OkHttpTool() {
         okHttpClient=new OkHttpClient();
     }
-    public static OkHttpTool get(){
+    public OkHttpClient newClient(){
+        return new OkHttpClient();
+    }
+    public OkHttpClient.Builder newClientBuilder(){
+        return new OkHttpClient.Builder();
+    }
+    public static OkHttpTool getClient(){
         if(singleObj==null){
             synchronized (OkHttpTool.class){
                 if(singleObj==null){
@@ -44,8 +53,15 @@ public class OkHttpTool {
 
     public <T> void requestImage(String url,TheOkHttpCallback<T> callback){
         Request.Builder builder = new Request.Builder();
+        RequestBody body=RequestBody.create(MediaType.parse( "; charset=utf-8"),"");
+        FormBody.Builder body1=new FormBody.Builder();
+        builder.post(body);
         builder.url(url);
         Call call = okHttpClient.newCall(builder.build());
         call.enqueue(callback);
+
+
+        OkHttpClient.Builder builder1=new OkHttpClient.Builder();
+        builder1.build();
     }
 }
