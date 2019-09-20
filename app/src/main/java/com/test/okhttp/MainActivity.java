@@ -16,7 +16,10 @@ import com.google.gson.Gson;
 import com.test.okhttp.bean.BaseBean;
 import com.test.okhttp.bean.TabDataRes;
 
+import java.lang.reflect.Method;
 import java.util.List;
+
+import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     ImageView ivTest;
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findViewById(R.id.btPost).setOnClickListener(this);
         findViewById(R.id.btPostImage).setOnClickListener(this);
+        findViewById(R.id.btGetMethod).setOnClickListener(this);
     }
 
     @Override
@@ -40,6 +44,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btPostImage:
                 postImage();
             break;
+            case R.id.btGetMethod:
+                getMethod();
+            break;
+        }
+    }
+
+    private void getMethod() {
+        OkHttpClient client = new OkHttpClient();
+        Method[] declaredMethods = client.getClass().getDeclaredMethods();
+        int length = declaredMethods.length;
+        loge(length+"");
+        for (int i = 0; i < length; i++) {
+            loge(declaredMethods[i].getName());
         }
     }
 

@@ -9,11 +9,14 @@ import android.util.Log;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+
+import okhttp3.OkHttpClient;
 
 import static org.junit.Assert.*;
 
@@ -49,5 +52,26 @@ public class ExampleInstrumentedTest {
         }
         System.out.println(builder.build().toString()+"[][][]");
         Log.i("=====","====="+builder.build().toString());
+    }
+
+
+    @Test
+    public void aaa() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        Class<? extends OkHttpClient.Builder> aClass = client.getClass();
+        Method enclosingMethod = aClass.getEnclosingMethod();
+        Method[] methods = aClass.getMethods();
+        Method[] declaredMethods = aClass.getDeclaredMethods();
+
+        int length = declaredMethods.length;
+        for (int i = 0; i < length; i++) {
+            Method declaredMethod = declaredMethods[i];
+            Class<?>[] parameterCount = declaredMethod.getParameterTypes();
+            if(parameterCount!=null&&parameterCount.length>0){
+                String name = declaredMethods[i].getName();
+                Log.e("======",name);
+            }
+        }
+
     }
 }
