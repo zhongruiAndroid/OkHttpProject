@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TheOkHttp.get().tag("a").start(imageUrl, new TheOkHttpCallback<InputStream>() {
             @Override
             public void response(InputStream response) {
+                //此处没做处理，如果内存不够用会引起oom
                 Bitmap bitmap = BitmapFactory.decodeStream(response);
-                //此处图片过大会引起oom
                 ivTest.setImageBitmap(bitmap);
                 showMsg("请求成功");
             }
