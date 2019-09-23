@@ -6,8 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.github.theokhttp.TheOkHttp;
+import com.google.gson.Gson;
+import com.test.okhttp.bean.OtherDataRes;
+import com.test.okhttp.bean.TabDataRes;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Main2Activity extends AppCompatActivity {
@@ -47,14 +51,16 @@ public class Main2Activity extends AppCompatActivity {
     private void noParamGet() {
         String url="https://wanandroid.com/wxarticle/chapters/json";
 
-        TheOkHttp.get().start(url, new MyCallback<String>() {
+        TheOkHttp.get().start(url, new MyCallback<List<TabDataRes>>() {
             @Override
-            public void success(String response) {
-                tvContent.setText(response);
+            public void success(List<TabDataRes> response) {
+                tvContent.setText(new Gson().toJson(response));
                 tvPrompt.setText("请求成功");
             }
+
             @Override
             public void error(Exception e) {
+
                 tvPrompt.setText("请求失败");
             }
         });
@@ -64,10 +70,10 @@ public class Main2Activity extends AppCompatActivity {
         Map<String,String> map=new HashMap<String,String>();
         map.put("k","Java");
 
-        TheOkHttp.get(map).start(url, new MyCallback<String>() {
+        TheOkHttp.get(map).start(url, new MyCallback<OtherDataRes>() {
             @Override
-            public void success(String response) {
-                tvContent.setText(response);
+            public void success(OtherDataRes response) {
+                tvContent.setText(response.toString());
                 tvPrompt.setText("请求成功");
             }
             @Override

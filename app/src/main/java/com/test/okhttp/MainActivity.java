@@ -107,4 +107,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void showMsg(String msg){
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
     }
+
+
+     private  void test(){
+        TheOkHttp.post()
+                .addHeader("key","value")
+                .tag("tag")
+                .start("", new MyCallback<String>() {
+                    @Override
+                    public void success(String response) {
+
+                    }
+                    @Override
+                    public void error(Exception e) {
+
+                    }
+                });
+     }
 }

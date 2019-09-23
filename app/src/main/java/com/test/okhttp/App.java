@@ -15,6 +15,6 @@ public class App extends Application {
         NetworkUtils.init(this);
         TheOkHttp.init();
         TheOkHttp.setDebug(BuildConfig.DEBUG);
-//        TheOkHttp.addIgnoreContentSubType("jpeg");
+        TheOkHttp.addIgnoreContentSubType("jpeg");
     }
 }

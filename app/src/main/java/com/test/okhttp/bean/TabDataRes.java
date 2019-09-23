@@ -89,4 +89,18 @@ public class TabDataRes {
         public void setChildren(List<?> children) {
             this.children = children;
         }
+
+    @Override
+    public String toString() {
+        return "TabDataRes{" +
+                "courseId=" + courseId +
+                ", id=" + id +
+                ", name='" + name + '\'' +
+                ", order=" + order +
+                ", parentChapterId=" + parentChapterId +
+                ", userControlSetTop=" + userControlSetTop +
+                ", visible=" + visible +
+                ", children=" + children +
+                '}';
+    }
 }
