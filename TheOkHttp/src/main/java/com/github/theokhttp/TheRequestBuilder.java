@@ -1,6 +1,10 @@
 package com.github.theokhttp;
 
+import android.net.Uri;
+
 import java.net.URL;
+import java.util.Map;
+import java.util.Set;
 
 import okhttp3.CacheControl;
 import okhttp3.Callback;
@@ -19,6 +23,7 @@ public class TheRequestBuilder {
     private Request.Builder builder;
 //    private String requestMethod=TheOkHttpConfig.POST;
 
+    private Map paramsMap;
     public TheRequestBuilder() {
         this.builder = new Request.Builder();
     }
@@ -157,7 +162,18 @@ public class TheRequestBuilder {
     }
 
     public <T extends Callback> void start(String url, T callback) {
-        getOkHttpClient().newCall(url(url).build()).enqueue(callback);
+        String newUrl=url;
+        if(paramsMap!=null){
+            Uri.Builder uri=new Uri.Builder();
+            uri.encodedPath(url);
+
+            Set<String> keySet = paramsMap.keySet();
+            for (String key:keySet){
+                uri.appendQueryParameter(key,String.valueOf(paramsMap.get(key)));
+            }
+            newUrl = uri.toString();
+        }
+        getOkHttpClient().newCall(url(newUrl).build()).enqueue(callback);
     }
 
     public TheRequestBuilder setOkHttpClient(OkHttpClient okHttpClient) {
@@ -168,6 +184,14 @@ public class TheRequestBuilder {
 
     public OkHttpClient getOkHttpClient() {
         return okHttpClient==null?TheOkHttp.single().getClient():okHttpClient;
+    }
+
+    public TheRequestBuilder setParamsMap(Map paramsMap) {
+        if(paramsMap==null){
+            return this;
+        }
+        this.paramsMap = paramsMap;
+        return this;
     }
     /*private void setMethod() {
         switch (requestMethod){

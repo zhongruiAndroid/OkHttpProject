@@ -63,7 +63,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
             contentLength = body.contentLength();
             contentType   = body.contentType();
         }
-        Type type = getType(getClass());
+        Type type = getType(this.getClass());
         if(type==null||type==String.class||type==Object.class){
             giveString(body);
         }else if(type==byte[].class){
@@ -74,7 +74,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         }else if(type==Reader.class){
             postResponse((T) body.charStream());
         }else{
-            throw new IllegalStateException("TheOkHttpCallback<T> T must be String or byte[] or InputStream or Reader");
+            giveString(body);
         }
     }
     private void giveString(ResponseBody body) throws IOException {

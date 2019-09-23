@@ -49,5 +49,6 @@ public class Main2Activity extends AppCompatActivity {
         });
         TheClientManager.get().cancelRequest("a1");
         finish();
+
     }
 }

@@ -25,10 +25,12 @@ import okhttp3.Dispatcher;
 import okhttp3.Dns;
 import okhttp3.EventListener;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
 
@@ -52,16 +54,24 @@ public class TheClientBuilder {
                     Request copyRequest = request.newBuilder().build();
                     Buffer buffer=new Buffer();
                     copyRequest.body().writeTo(buffer);
-                    params="params->"+buffer.readUtf8();
+                    params=buffer.readUtf8();
+                }
+                ResponseBody body = response.body();
+                String resultString="";
+                MediaType mediaType = body.contentType();
+                String subtype = mediaType.subtype();
+                if(TheOkHttp.single().getIgnoreContentSubType().contains(subtype)){
+                    resultString=subtype;
+                }else{
+                    BufferedSource source = body.source();
+                    source.request(Long.MAX_VALUE);
+                    Buffer buffer = source.getBuffer();
+                    resultString= buffer.clone().readString(Charset.forName("UTF-8"));
                 }
 
-                BufferedSource source = response.body().source();
-                source.request(Long.MAX_VALUE);
-                Buffer buffer = source.getBuffer();
-                String resultString= buffer.clone().readString(Charset.forName("UTF-8"));
-
                 double timeInterval=(endTime-startTime)/1e6d;
-                String msg = "\nurl->" + request.url()
+                String msg = "url->" + request.url()
+                        +"\nparams->" + params
                         + "\nmethod->"+request.method()
                         + "\ntime->" + timeInterval+"ms"
                         + "\nheaders->" + request.headers()

@@ -17,5 +17,6 @@ public class App extends Application {
         NetworkUtils.init(this);
         TheOkHttp.init().connectTimeout(10,TimeUnit.SECONDS).complete();
         TheOkHttp.setDebug(BuildConfig.DEBUG);
+        TheOkHttp.addIgnoreContentSubType("jpeg");
     }
 }

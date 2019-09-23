@@ -4,6 +4,8 @@ import android.net.Uri;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -19,6 +21,7 @@ import okhttp3.RequestBody;
  *   created by android on 2019/9/19
  */
 public class TheOkHttp {
+    private List<String> ignoreContentSubType=new ArrayList<>();
     private static TheOkHttp singleObj;
     protected static TheOkHttp single() {
         if (singleObj == null) {
@@ -39,6 +42,16 @@ public class TheOkHttp {
                 .readTimeout(TheOkHttpConfig.HTTP_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(TheClientBuilder.appInterceptor).build();
         TheClientManager.get().add(okHttpClient);
+    }
+    public static void addIgnoreContentSubType(String contentType){
+        TheOkHttp.single().ignoreContentSubType.add(contentType);
+    }
+    public static void addIgnoreContentSubType(List<String> contentType){
+        TheOkHttp.single().ignoreContentSubType.addAll(contentType);
+    }
+
+    public List<String> getIgnoreContentSubType() {
+        return ignoreContentSubType;
     }
 
     public static void setDebug(boolean debug) {
@@ -99,6 +112,12 @@ public class TheOkHttp {
         theRequestBuilder.url(url);
         theRequestBuilder.get();
         TheOkHttp.single().okHttpClient.newCall(theRequestBuilder.build()).enqueue(callback);
+    }
+    public static TheRequestBuilder get(){
+        return TheRequestBuilder.newInstance().get();
+    }
+    public static TheRequestBuilder get(Map map){
+        return TheRequestBuilder.newInstance().get().setParamsMap(map);
     }
     /*-----------------------------------MultipartBody-----------------------------------------*/
     public static TheRequestBuilder postMultipart(MultipartBody multipartBody){
