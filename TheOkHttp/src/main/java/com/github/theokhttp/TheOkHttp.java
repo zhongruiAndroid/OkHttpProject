@@ -51,6 +51,7 @@ public class TheOkHttp {
         TheOkHttp.single().setClient(httpClient);
     }
     public static TheClientBuilder init(){
+        TheOkHttp.single();
         return new TheClientBuilder();
     }
     public OkHttpClient getClient(){

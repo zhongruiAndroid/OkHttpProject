@@ -24,6 +24,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="获取方法"/>
+    <Button
+        android:id="@+id/btTestCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试取消请求"/>
     <ImageView
         android:id="@+id/ivTest"
         android:layout_width="200dp"

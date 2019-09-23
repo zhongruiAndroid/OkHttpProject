@@ -1,5 +1,6 @@
 package com.test.okhttp;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btPost).setOnClickListener(this);
         findViewById(R.id.btPostImage).setOnClickListener(this);
         findViewById(R.id.btGetMethod).setOnClickListener(this);
+        findViewById(R.id.btTestCancel).setOnClickListener(this);
     }
 
     @Override
@@ -52,7 +54,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btGetMethod:
                 test();
             break;
+            case R.id.btTestCancel:
+                btTestCancel();
+            break;
         }
+    }
+
+    private void btTestCancel() {
+        startActivity(new Intent(this,Main2Activity.class));
     }
 
     private void test() {

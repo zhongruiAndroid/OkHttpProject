@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 
 import okhttp3.Call;
@@ -23,7 +24,7 @@ import okio.BufferedSource;
  *   created by android on 2019/9/19
  */
 public abstract class TheOkHttpCallback<T> implements Callback {
-    private Handler handler;
+    protected Handler handler;
     public long contentLength;
     public MediaType contentType;
     private boolean saveContentType;
@@ -33,11 +34,24 @@ public abstract class TheOkHttpCallback<T> implements Callback {
     }
     public abstract void response(T response);
     public abstract void failure(Exception e);
+    public void  cancel(Exception e){};
+    public void  noNetwork(Exception e){};
+    public void  timeout(Exception e){};
     @Override
     public void onFailure(final Call call, final IOException e) {
         handler.post(new Runnable() {
             @Override
             public void run() {
+                if(e instanceof SocketTimeoutException &&"after".equals(e.getMessage())){
+                    timeout(e);
+                }
+                if(call.isCanceled()){
+                    cancel(e);
+                    return;
+                }
+                if(NetworkUtils.getContext()!=null&&NetworkUtils.noNetwork()){
+                    noNetwork(e);
+                }
                 failure(e);
             }
         });
