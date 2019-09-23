@@ -3,6 +3,7 @@ package com.test.okhttp;
 import com.github.theokhttp.TheOkHttpCallback;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -49,6 +50,7 @@ public class OkHttpTool {
         Request.Builder builder = new Request.Builder();
         builder.url(url);
         okHttpClient.newCall(builder.build()).enqueue(callback);
+
     }
 
     public <T> void requestImage(String url,TheOkHttpCallback<T> callback){
@@ -59,6 +61,7 @@ public class OkHttpTool {
         builder.url(url);
         Call call = okHttpClient.newCall(builder.build());
         call.enqueue(callback);
+        Object tag = call.request().tag();
 
 
         OkHttpClient.Builder builder1=new OkHttpClient.Builder();

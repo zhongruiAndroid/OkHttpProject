@@ -24,8 +24,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 
-import static okhttp3.internal.Util.checkDuration;
-
 /***
  *   created by android on 2019/9/20
  */
@@ -36,9 +34,7 @@ public class TheClientBuilder {
     private int readTimeout = TheOkHttpConfig.HTTP_READ_TIMEOUT;
 
     private OkHttpClient.Builder builder;
-    private String url;
-    public TheClientBuilder(String url) {
-        this.url = url;
+    public TheClientBuilder( ) {
         builder=new OkHttpClient.Builder();
     }
     public OkHttpClient.Builder getBuilder() {

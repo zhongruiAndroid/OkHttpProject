@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.github.theokhttp.TheOkHttp;
 import com.github.theokhttp.TheOkHttpCallback;
 import com.google.gson.Gson;
 import com.test.okhttp.bean.BaseBean;
@@ -19,7 +20,9 @@ import com.test.okhttp.bean.TabDataRes;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     ImageView ivTest;
@@ -136,5 +139,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     private String getStr(Object object){
         return new Gson().toJson(object);
+    }
+
+
+    public void aa(){
+        String url="https://wanandroid.com/article/listproject/0/json";
+        TheOkHttp.start(url, new MyCallback<String>() {
+            @Override
+            public void success(String response) {
+
+            }
+            @Override
+            public void error(Exception e) {
+
+            }
+        });
+        Call call=null;
+        Object tag = call.request().tag();
+        String tag1 = call.request().tag(String.class);
+
+        Request.Builder request=new Request.Builder();
+        request.tag(this);
+        request.tag(MainActivity.class,this);
+
+
+
+
     }
 }

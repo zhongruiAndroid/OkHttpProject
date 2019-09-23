@@ -1,7 +1,5 @@
 package com.test.okhttp.bean;
 
-import java.util.List;
-
 /***
  *   created by android on 2019/9/19
  */
