@@ -155,4 +155,16 @@ TheOkClientManager.get().cancelRequest(tag);
 
 //取消某个client的所有tag标记的请求
 TheOkClientManager.get().cancelRequest(client,tag);
+```  
+  
+    
+    
+| 最新版本号 | [ ![Download](https://api.bintray.com/packages/zhongrui/mylibrary/TheOkHttp/images/download.svg) ](https://bintray.com/zhongrui/mylibrary/TheOkHttp/_latestVersion) |
+|--------|----|
+  
+
+
+
+```gradle
+implementation 'com.github:TheOkHttp:版本号看上面'
 ```
