@@ -1,3 +1,4 @@
+/*
 package com.github.theokhttp;
 
 import java.net.Proxy;
@@ -24,9 +25,11 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 
+*/
 /***
  *   created by android on 2019/9/20
- */
+ *//*
+
 public class TheClientBuilder {
 
     private int connectTimeout = TheOkHttpConfig.HTTP_CONNECT_TIMEOUT;
@@ -210,3 +213,4 @@ public class TheClientBuilder {
     }
 
 }
+*/

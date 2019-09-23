@@ -2,15 +2,12 @@ package com.github.theokhttp;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.WildcardType;
 import java.nio.charset.Charset;
 
 import okhttp3.Call;
@@ -58,6 +55,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         }else if(type==byte[].class){
             postResponse((T) body.bytes());
         }else if(type==InputStream.class){
+            saveContentType=true;
             postResponse((T) body.byteStream());
         }else if(type==Reader.class){
             postResponse((T) body.charStream());

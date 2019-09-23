@@ -1,0 +1,81 @@
+package com.github.theokhttp;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+
+/***
+ *   created by zhongrui on 2019/9/23
+ */
+public class TheClientManager {
+    private static TheClientManager singleObj;
+    private volatile Set<OkHttpClient> clientSet;
+
+    private TheClientManager() {
+        clientSet = new HashSet<>();
+    }
+
+    public static TheClientManager get() {
+        if (singleObj == null) {
+            synchronized (TheClientManager.class) {
+                if (singleObj == null) {
+                    singleObj = new TheClientManager();
+                }
+            }
+        }
+        return singleObj;
+    }
+
+    public void add(OkHttpClient client) {
+        clientSet.add(client);
+    }
+
+    public void cancelAllRequest() {
+        Iterator<OkHttpClient> iterator = clientSet.iterator();
+        while (iterator.hasNext()) {
+            OkHttpClient next = iterator.next();
+            cancelAllRequest(next);
+        }
+    }
+    public void cancelAllRequest(OkHttpClient client) {
+        client.dispatcher().cancelAll();
+    }
+
+    public void cancelRequest(Object tag) {
+        if(tag==null){
+            return;
+        }
+        Iterator<OkHttpClient> iterator = clientSet.iterator();
+        while (iterator.hasNext()){
+            OkHttpClient next = iterator.next();
+            cancelRequest(next,tag,false);
+        }
+    }
+
+    public void cancelRequest(OkHttpClient client, Object tag ) {
+        cancelRequest(client,tag,true);
+    }
+    private void cancelRequest(OkHttpClient client, Object tag,boolean needCheckNull) {
+        if (needCheckNull&&tag == null) {
+            return;
+        }
+        List<Call> calls = client.dispatcher().queuedCalls();
+        for (Call call:calls){
+            if(tag.equals(call.request().tag())){
+                call.cancel();
+            }
+        }
+
+        calls = client.dispatcher().runningCalls();
+        for (Call call:calls){
+            if(tag.equals(call.request().tag())){
+                call.cancel();
+            }
+        }
+    }
+
+}

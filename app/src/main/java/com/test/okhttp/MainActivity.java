@@ -13,14 +13,12 @@ import android.widget.Toast;
 
 import com.github.theokhttp.TheOkHttp;
 import com.github.theokhttp.TheOkHttpCallback;
-import com.github.theokhttp.TheOkHttpConfig;
 import com.google.gson.Gson;
 import com.test.okhttp.bean.BaseBean;
 import com.test.okhttp.bean.TabDataRes;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -57,12 +55,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void test() {
         String url="https://wanandroid.com/wxarticle/chapters/json";
-        TheOkHttp.init(new OkHttpClient.Builder()
+       /* TheOkHttp.init(new OkHttpClient.Builder()
                 .connectTimeout(TheOkHttpConfig.HTTP_CONNECT_TIMEOUT,TimeUnit.SECONDS)
                 .writeTimeout(TheOkHttpConfig.HTTP_WRITE_TIMEOUT,TimeUnit.SECONDS)
                 .readTimeout(TheOkHttpConfig.HTTP_READ_TIMEOUT,TimeUnit.SECONDS)
-                .build());
-        TheOkHttp.startGet(url, new TheOkHttpCallback<String>() {
+                .build());*/
+        TheOkHttp.setDebug(true);
+        TheOkHttp.post().start(url, new TheOkHttpCallback<String>() {
             @Override
             public void response(String response) {
                 Log.e("======","=3====="+response);
@@ -185,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         request.tag(MainActivity.class,this);
 
 
-        TheOkHttp.init(null);
         TheOkHttp.post();
     }
 }
