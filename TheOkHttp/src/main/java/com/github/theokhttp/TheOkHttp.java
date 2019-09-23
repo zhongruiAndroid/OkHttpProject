@@ -26,7 +26,7 @@ import okio.BufferedSource;
  *   created by android on 2019/9/19
  */
 public class TheOkHttp {
-    private final String TAG=this.getClass().getSimpleName()+"===";
+    private final String TAG=this.getClass().getSimpleName()+"==";
     private static TheOkHttp singleObj;
     private OkHttpClient okHttpClient;
     private boolean isDebug;
@@ -59,7 +59,7 @@ public class TheOkHttp {
                     Request copyRequest = request.newBuilder().build();
                     Buffer buffer=new Buffer();
                     copyRequest.body().writeTo(buffer);
-                    params="\nparams->"+buffer.readUtf8()+"\n";
+                    params="params->"+buffer.readUtf8();
                 }
 
                 BufferedSource source = response.body().source();
@@ -70,13 +70,13 @@ public class TheOkHttp {
                 double timeInterval=(endTime-startTime)/1e6d;
                 String msg = "\nurl->" + request.url()
                         + "\nmethod->"+request.method()
+                        + "\ntime->" + timeInterval+"ms"
                         + "\nheaders->" + request.headers()
                         + "\nresponse code->" + response.code()
-                        + "\ntime->" + timeInterval+"ms"
                         + "\nresponse headers->" + response.headers()
                         + "\nresponse body->" + resultString;
 
-                LG.print(Log.INFO,TAG,params+msg);
+                LG.print(Log.ERROR,TAG,params+msg,false);
 
                 return response;
             }

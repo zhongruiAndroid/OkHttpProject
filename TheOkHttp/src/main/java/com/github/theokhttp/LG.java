@@ -129,7 +129,7 @@ public class LG {
     }
 
     public static void print(int priority,String tag,String msg){
-        print(priority,tag,msg,false);
+        print(priority,tag,msg,true);
     }
     public static void print(int priority,String tag,String msg,boolean printHeader){
         if(msg==null){
@@ -143,7 +143,7 @@ public class LG {
         byte[] bytes = msg.getBytes();
         int byteLength = bytes.length;
         if(byteLength<=printLength){
-            Log.println(priority,tag,HORIZONTAL_LINE+msg);
+            logContent(priority,tag,msg);
             /*logE(tag,TOP_BORDER);
             logE(tag,HORIZONTAL_LINE+msg);
             logE(tag,BOTTOM_BORDER);*/
@@ -152,10 +152,18 @@ public class LG {
             for (int i = 0; i < byteLength; i+=printLength) {
                 int count = Math.min(byteLength - i, printLength);
 //                logE(tag,HORIZONTAL_LINE+new String(bytes,i,count));
-                Log.println(priority,tag,HORIZONTAL_LINE+new String(bytes,i,count));
+//                Log.println(priority,tag,HORIZONTAL_LINE+new String(bytes,i,count));
+                logContent(priority,tag,new String(bytes,i,count));
             }
 //            logE(tag,BOTTOM_BORDER);
         }
         Log.println(priority,tag,BOTTOM_BORDER);
+    }
+
+    private static void logContent(int priority,String tag,String chunk) {
+        String[] lines = chunk.split(System.getProperty("line.separator"));
+        for (String line : lines) {
+            Log.println(priority,tag,HORIZONTAL_LINE+line);
+        }
     }
 }
