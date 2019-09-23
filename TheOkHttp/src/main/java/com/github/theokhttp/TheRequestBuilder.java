@@ -178,7 +178,7 @@ public class TheRequestBuilder {
 
     public TheRequestBuilder setOkHttpClient(OkHttpClient okHttpClient) {
         this.okHttpClient = okHttpClient;
-        TheClientManager.get().add(okHttpClient);
+        TheOkClientManager.get().add(okHttpClient);
         return this;
     }
 
@@ -186,7 +186,7 @@ public class TheRequestBuilder {
         return okHttpClient==null?TheOkHttp.single().getClient():okHttpClient;
     }
 
-    public TheRequestBuilder setParamsMap(Map paramsMap) {
+    public TheRequestBuilder queryParamsMap(Map paramsMap) {
         if(paramsMap==null){
             return this;
         }

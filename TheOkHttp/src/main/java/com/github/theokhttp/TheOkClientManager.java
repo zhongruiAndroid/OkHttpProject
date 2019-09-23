@@ -11,19 +11,19 @@ import okhttp3.OkHttpClient;
 /***
  *   created by zhongrui on 2019/9/23
  */
-public class TheClientManager {
-    private static TheClientManager singleObj;
+public class TheOkClientManager {
+    private static TheOkClientManager singleObj;
     private volatile Set<OkHttpClient> clientSet;
 
-    private TheClientManager() {
+    private TheOkClientManager() {
         clientSet = new HashSet<>();
     }
 
-    public static TheClientManager get() {
+    public static TheOkClientManager get() {
         if (singleObj == null) {
-            synchronized (TheClientManager.class) {
+            synchronized (TheOkClientManager.class) {
                 if (singleObj == null) {
-                    singleObj = new TheClientManager();
+                    singleObj = new TheOkClientManager();
                 }
             }
         }

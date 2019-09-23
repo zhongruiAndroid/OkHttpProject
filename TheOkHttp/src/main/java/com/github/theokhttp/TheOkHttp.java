@@ -41,7 +41,7 @@ public class TheOkHttp {
                 .writeTimeout(TheOkHttpConfig.HTTP_WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TheOkHttpConfig.HTTP_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(TheClientBuilder.appInterceptor).build();
-        TheClientManager.get().add(okHttpClient);
+        TheOkClientManager.get().add(okHttpClient);
     }
     public static void addIgnoreContentSubType(String contentType){
         TheOkHttp.single().ignoreContentSubType.add(contentType);
@@ -71,9 +71,9 @@ public class TheOkHttp {
         return okHttpClient;
     }
     public void setClient(OkHttpClient client){
-        TheClientManager.get().remove(okHttpClient);
+        TheOkClientManager.get().remove(okHttpClient);
         okHttpClient=client;
-        TheClientManager.get().add(okHttpClient);
+        TheOkClientManager.get().add(okHttpClient);
     }
 
 
@@ -117,7 +117,7 @@ public class TheOkHttp {
         return TheRequestBuilder.newInstance().get();
     }
     public static TheRequestBuilder get(Map map){
-        return TheRequestBuilder.newInstance().get().setParamsMap(map);
+        return TheRequestBuilder.newInstance().get().queryParamsMap(map);
     }
     /*-----------------------------------MultipartBody-----------------------------------------*/
     public static TheRequestBuilder postMultipart(MultipartBody multipartBody){
