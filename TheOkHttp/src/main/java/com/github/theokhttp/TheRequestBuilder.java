@@ -167,7 +167,7 @@ public class TheRequestBuilder {
     }
 
     public OkHttpClient getOkHttpClient() {
-        return okHttpClient==null?TheOkHttp.getSingle().getClient():okHttpClient;
+        return okHttpClient==null?TheOkHttp.single().getClient():okHttpClient;
     }
     /*private void setMethod() {
         switch (requestMethod){

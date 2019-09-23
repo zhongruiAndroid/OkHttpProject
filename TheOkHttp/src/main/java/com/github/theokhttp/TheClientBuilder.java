@@ -1,8 +1,11 @@
-/*
 package com.github.theokhttp;
 
+import android.util.Log;
+
+import java.io.IOException;
 import java.net.Proxy;
 import java.net.ProxySelector;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -24,26 +27,65 @@ import okhttp3.EventListener;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.Response;
+import okio.Buffer;
+import okio.BufferedSource;
 
-*/
 /***
- *   created by android on 2019/9/20
- *//*
+ *   created by android on 2019/9/19
+ */
 
 public class TheClientBuilder {
 
-    private int connectTimeout = TheOkHttpConfig.HTTP_CONNECT_TIMEOUT;
-    private int writeTimeout = TheOkHttpConfig.HTTP_WRITE_TIMEOUT;
-    private int readTimeout = TheOkHttpConfig.HTTP_READ_TIMEOUT;
+    public static Interceptor appInterceptor=new Interceptor() {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            if(TheOkHttp.isDebug()){
+                long startTime = System.nanoTime();
+                Response response = chain.proceed(request);
+                long endTime = System.nanoTime();
+
+                String params="";
+                if(request.body()!=null){
+                    Request copyRequest = request.newBuilder().build();
+                    Buffer buffer=new Buffer();
+                    copyRequest.body().writeTo(buffer);
+                    params="params->"+buffer.readUtf8();
+                }
+
+                BufferedSource source = response.body().source();
+                source.request(Long.MAX_VALUE);
+                Buffer buffer = source.getBuffer();
+                String resultString= buffer.clone().readString(Charset.forName("UTF-8"));
+
+                double timeInterval=(endTime-startTime)/1e6d;
+                String msg = "\nurl->" + request.url()
+                        + "\nmethod->"+request.method()
+                        + "\ntime->" + timeInterval+"ms"
+                        + "\nheaders->" + request.headers()
+                        + "\nresponse code->" + response.code()
+                        + "\nresponse headers->" + response.headers()
+                        + "\nresponse body->" + resultString;
+
+                LG.print(Log.INFO,"TheOkHttp==",params+msg);
+
+                return response;
+            }
+            return chain.proceed(request);
+        }
+    };
 
     private OkHttpClient.Builder builder;
     public TheClientBuilder( ) {
-        builder=new OkHttpClient.Builder();
+        builder = new OkHttpClient.Builder()
+                .connectTimeout(TheOkHttpConfig.HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(TheOkHttpConfig.HTTP_WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(TheOkHttpConfig.HTTP_READ_TIMEOUT, TimeUnit.SECONDS)
+                .addInterceptor(appInterceptor)
+        ;
     }
-    public OkHttpClient.Builder getBuilder() {
-        return builder;
-    }
-
     public TheClientBuilder addNetworkInterceptor(Interceptor interceptor) {
         builder.addNetworkInterceptor(interceptor);
         return this;
@@ -105,11 +147,6 @@ public class TheClientBuilder {
 
     public TheClientBuilder addInterceptor(Interceptor interceptor) {
         builder.addInterceptor(interceptor);
-        return this;
-    }
-
-    public TheClientBuilder connectTimeout(Duration duration) {
-        builder.connectTimeout(duration);
         return this;
     }
 
@@ -191,12 +228,20 @@ public class TheClientBuilder {
         builder.connectTimeout(timeout,unit);
         return this;
     }
+    public TheClientBuilder connectTimeout(Duration duration) {
+        builder.connectTimeout(duration);
+        return this;
+    }
 
     public TheClientBuilder writeTimeout(long timeoutSeconds) {
         return writeTimeout(timeoutSeconds, TimeUnit.SECONDS);
     }
     public TheClientBuilder writeTimeout(long timeout, TimeUnit unit) {
         builder.writeTimeout(timeout,unit);
+        return this;
+    }
+    public TheClientBuilder writeTimeout(Duration duration) {
+        builder.writeTimeout(duration);
         return this;
     }
 
@@ -211,6 +256,7 @@ public class TheClientBuilder {
         builder.readTimeout(duration);
         return this;
     }
-
+    public void complete(){
+        TheOkHttp.single().setClient(builder.build());
+    }
 }
-*/

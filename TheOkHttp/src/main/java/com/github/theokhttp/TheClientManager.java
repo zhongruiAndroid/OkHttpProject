@@ -33,6 +33,9 @@ public class TheClientManager {
     public void add(OkHttpClient client) {
         clientSet.add(client);
     }
+    public void remove(OkHttpClient client) {
+        clientSet.remove(client);
+    }
 
     public void cancelAllRequest() {
         Iterator<OkHttpClient> iterator = clientSet.iterator();
