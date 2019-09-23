@@ -16,6 +16,11 @@ import com.github.theokhttp.TheOkHttpCallback;
 
 import java.io.InputStream;
 
+import okhttp3.CacheControl;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     ImageView ivTest;
     AppCompatCheckBox cbCancelRequest;
@@ -110,18 +115,80 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
      private  void test(){
-        TheOkHttp.post()
-                .addHeader("key","value")
-                .tag("tag")
-                .start("", new MyCallback<String>() {
-                    @Override
-                    public void success(String response) {
 
-                    }
-                    @Override
-                    public void error(Exception e) {
 
-                    }
-                });
+         OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                 .cache(null)//设置缓存
+                 //...省略N个官方api
+                 .build();
+
+         Headers headers=null;
+         CacheControl cacheControl=null;
+         RequestBody body=null;
+//      FormBody body=null;
+//      MultipartBody body=null;
+         String url="";
+         TheOkHttp
+                 //设置post请求
+                 .post()
+                 .setOkHttpClient(okHttpClient)
+                 //设置get请求
+                 .get()
+                 //设置delete请求
+                 .delete(body)
+                 //设置head请求
+                 .head()
+                 //设置patch请求
+                 .patch(body)
+                 //设置put请求
+                 .put(body)
+                 //设置请求方式，效果同上
+                 .method("POST",body)
+                 //缓存控制器
+                 .cacheControl(cacheControl)
+                 //设置header,覆盖相同name的header
+                 .header("name","value")
+                 //设置headers(清除之前所有的header)
+                 .headers(headers)
+                 //添加header,可以添加相同name的header,不覆盖也不清除之前的header
+                 .addHeader("name","value")
+                 //移除header
+                 .removeHeader("name")
+                 //设置请求tag，可用于取消请求
+                 .tag("tag")
+                 //如果请求图片，可以设置泛型为InputStream
+                 //因为没有依赖其他json解析库,所以TheOkHttpCallback泛型只支持  String  byte[]  InputStream  Reader
+                 //如果想获取某个具体的对象，请继承TheOkHttpCallback 返回String,使用gson转换
+                 .start(url, new TheOkHttpCallback<InputStream>() {
+                     @Override
+                     public void response(InputStream response) {
+
+                     }
+                     @Override
+                     public void failure(Exception e) {
+
+                     }
+                 });
+
+
+//        TheOkHttp.post().start(url);
+//        TheOkHttp.postForm(null).start(url);
+//        TheOkHttp.postMultipart(null).start(url);
+
+       /*  TheOkHttp.init(okHttpClient);
+
+         TheOkHttp.init()
+                 .addInterceptor()
+                 .addNetworkInterceptor()
+                 .connectTimeout()
+                 .readTimeout()
+                 .writeTimeout()
+                 .complete();*/
+
+//         TheOkClientManager.get().cancelAllRequest();
+//         TheOkClientManager.get().cancelAllRequest(client);
+//         TheOkClientManager.get().cancelRequest(tag);
+//         TheOkClientManager.get().cancelRequest(client,tag);
+
      }
 }

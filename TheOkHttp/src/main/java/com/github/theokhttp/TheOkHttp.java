@@ -1,5 +1,6 @@
 package com.github.theokhttp;
 
+import android.content.Context;
 import android.net.Uri;
 
 import org.json.JSONObject;
@@ -59,6 +60,9 @@ public class TheOkHttp {
     }
     public  static  boolean isDebug() {
         return single().isDebug;
+    }
+    public static void setNetworkHelper(Context context){
+        NetworkUtils.init(context);
     }
     public static void init(OkHttpClient httpClient){
         TheOkHttp.single().setClient(httpClient);

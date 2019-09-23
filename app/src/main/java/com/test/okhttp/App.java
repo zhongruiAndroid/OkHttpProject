@@ -2,7 +2,6 @@ package com.test.okhttp;
 
 import android.app.Application;
 
-import com.github.theokhttp.NetworkUtils;
 import com.github.theokhttp.TheOkHttp;
 
 /***
@@ -12,8 +11,8 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        NetworkUtils.init(this);
         TheOkHttp.init();
+        TheOkHttp.setNetworkHelper(this);
         TheOkHttp.setDebug(BuildConfig.DEBUG);
         TheOkHttp.addIgnoreContentSubType("jpeg");
     }

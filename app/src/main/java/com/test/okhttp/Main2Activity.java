@@ -49,7 +49,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     private void noParamGet() {
-        String url="https://wanandroid.com/wxarticle/chapters/json";
+        String url = "https://wanandroid.com/wxarticle/chapters/json";
 
         TheOkHttp.get().start(url, new MyCallback<List<TabDataRes>>() {
             @Override
@@ -66,9 +66,9 @@ public class Main2Activity extends AppCompatActivity {
         });
     }
     private void paramGet() {
-        String url="https://wanandroid.com/wxarticle/list/408/1/json";
-        Map<String,String> map=new HashMap<String,String>();
-        map.put("k","Java");
+        String url = "https://wanandroid.com/wxarticle/list/408/1/json";
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("k", "Java");
 
         TheOkHttp.get(map).start(url, new MyCallback<OtherDataRes>() {
             @Override
@@ -76,31 +76,34 @@ public class Main2Activity extends AppCompatActivity {
                 tvContent.setText(response.toString());
                 tvPrompt.setText("请求成功");
             }
+
             @Override
             public void error(Exception e) {
                 tvPrompt.setText("请求失败");
             }
         });
-
     }
+
     private void noParamPost() {
-        String url="https://wanandroid.com/wxarticle/chapters/json";
+        String url = "https://wanandroid.com/wxarticle/chapters/json";
         TheOkHttp.post().start(url, new MyCallback<String>() {
             @Override
             public void success(String response) {
                 tvContent.setText(response);
                 tvPrompt.setText("请求成功");
             }
+
             @Override
             public void error(Exception e) {
                 tvPrompt.setText("请求失败");
             }
         });
     }
+
     private void paramPost() {
-        String url="https://wanandroid.com/wxarticle/list/408/1/json";
-        Map<String,String> map=new HashMap<String,String>();
-        map.put("k","Java");
+        String url = "https://wanandroid.com/wxarticle/list/408/1/json";
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("k", "Java");
 
         TheOkHttp.get(map).start(url, new MyCallback<String>() {
             @Override
@@ -108,6 +111,7 @@ public class Main2Activity extends AppCompatActivity {
                 tvContent.setText(response);
                 tvPrompt.setText("请求成功");
             }
+
             @Override
             public void error(Exception e) {
                 tvPrompt.setText("请求失败");
