@@ -33,7 +33,7 @@ TheOkHttp.get(map).start(url,new TheOkHttpCallback<String>() {
    }
 });
 
-//如果不设置其他参数可以直接调用
+//如果不设置其他request参数可以直接调用
 TheOkHttp.startGet(url,callback)
 TheOkHttp.startGet(map,url,callback)
 ```
