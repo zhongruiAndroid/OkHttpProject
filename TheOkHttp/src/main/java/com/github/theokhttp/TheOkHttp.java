@@ -27,7 +27,7 @@ public class TheOkHttp {
                 .readTimeout(TheOkHttpConfig.HTTP_READ_TIMEOUT,TimeUnit.SECONDS)
                 .build();
     }
-    private static TheOkHttp getSingle() {
+    protected static TheOkHttp getSingle() {
         if (singleObj == null) {
             synchronized (TheOkHttp.class) {
                 if (singleObj == null) {
@@ -48,6 +48,9 @@ public class TheOkHttp {
         return new TheClientBuilder();
     }
     /*-----------------------------------FormBody-----------------------------------------*/
+    public static TheRequestBuilder postForm(){
+        return TheRequestBuilder.newInstance().post(new FormBody.Builder().build());
+    }
     public static TheRequestBuilder postForm(Map<String,Object>map){
         return postForm(map,false);
     }
@@ -62,6 +65,9 @@ public class TheOkHttp {
         return TheRequestBuilder.newInstance().post(multipartBody);
     }
     /*-----------------------------------RequestBody-----------------------------------------*/
+    public static TheRequestBuilder post(){
+        return post("");
+    }
     public static TheRequestBuilder post(Map<String,Object>map){
         JSONObject jsonObject=new JSONObject(map);
         return post(jsonObject.toString());
@@ -75,7 +81,7 @@ public class TheOkHttp {
     }
     /**********************************************************************************************/
 
-    public static <T extends Callback>void start(Map<String,Object>map,String url,T callback){
+    public static <T extends Callback>void startGet(Map<String,Object>map,String url,T callback){
         Uri.Builder uri=new Uri.Builder();
         uri.path(url);
         if(map!=null){
@@ -83,9 +89,9 @@ public class TheOkHttp {
                 uri.appendQueryParameter(entry.getKey(),String.valueOf(entry.getValue()));
             }
         }
-        start(uri.toString(),callback);
+        startGet(uri.toString(),callback);
     }
-    public static <T extends Callback>void start(String url,T callback){
+    public static <T extends Callback>void startGet(String url,T callback){
         TheRequestBuilder theRequestBuilder = TheRequestBuilder.newInstance();
         theRequestBuilder.get();
         theRequestBuilder.url(url);

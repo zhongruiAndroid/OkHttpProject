@@ -21,6 +21,7 @@ public class TheRequestBuilder {
 
     public TheRequestBuilder() {
         this.builder =new Request.Builder();
+        okHttpClient=TheOkHttp.getSingle().getClient();
     }
 
     public static TheRequestBuilder newInstance() {

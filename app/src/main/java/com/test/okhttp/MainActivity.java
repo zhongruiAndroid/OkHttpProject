@@ -2,10 +2,10 @@ package com.test.okhttp;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,12 +13,14 @@ import android.widget.Toast;
 
 import com.github.theokhttp.TheOkHttp;
 import com.github.theokhttp.TheOkHttpCallback;
+import com.github.theokhttp.TheOkHttpConfig;
 import com.google.gson.Gson;
 import com.test.okhttp.bean.BaseBean;
 import com.test.okhttp.bean.TabDataRes;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -48,11 +50,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 postImage();
             break;
             case R.id.btGetMethod:
-                getMethod();
+                test();
             break;
         }
     }
 
+    private void test() {
+        String url="https://wanandroid.com/wxarticle/chapters/json";
+        TheOkHttp.init(new OkHttpClient.Builder()
+                .connectTimeout(TheOkHttpConfig.HTTP_CONNECT_TIMEOUT,TimeUnit.SECONDS)
+                .writeTimeout(TheOkHttpConfig.HTTP_WRITE_TIMEOUT,TimeUnit.SECONDS)
+                .readTimeout(TheOkHttpConfig.HTTP_READ_TIMEOUT,TimeUnit.SECONDS)
+                .build());
+        TheOkHttp.startGet(url, new TheOkHttpCallback<String>() {
+            @Override
+            public void response(String response) {
+                Log.e("======","=3====="+response);
+            }
+
+            @Override
+            public void failure(Exception e) {
+                Log.e("======","=3====="+e.getMessage());
+            }
+        });
+
+    }
     private void getMethod() {
         OkHttpClient client = new OkHttpClient();
         Method[] declaredMethods = client.getClass().getDeclaredMethods();
@@ -144,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void aa(){
         String url="https://wanandroid.com/article/listproject/0/json";
-        TheOkHttp.start(url, new MyCallback<String>() {
+        TheOkHttp.startGet(url, new MyCallback<String>() {
             @Override
             public void success(String response) {
 
@@ -163,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         request.tag(MainActivity.class,this);
 
 
-
-
+        TheOkHttp.init(null);
+        TheOkHttp.post();
     }
 }

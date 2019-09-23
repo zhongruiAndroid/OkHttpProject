@@ -10,15 +10,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -27,6 +27,26 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
+    @Test
+    public void asfd() {
+            String url="https://wanandroid.com/article/listproject/0/json";
+            TheOkHttp.init(new OkHttpClient.Builder()
+                    .connectTimeout(TheOkHttpConfig.HTTP_CONNECT_TIMEOUT,TimeUnit.SECONDS)
+                    .writeTimeout(TheOkHttpConfig.HTTP_WRITE_TIMEOUT,TimeUnit.SECONDS)
+                    .readTimeout(TheOkHttpConfig.HTTP_READ_TIMEOUT,TimeUnit.SECONDS)
+                    .build());
+            TheOkHttp.post().start(url, new TheOkHttpCallback<String>() {
+                @Override
+                public void response(String response) {
+                    Log.i("======","======"+response);
+                }
+
+                @Override
+                public void failure(Exception e) {
+                    Log.i("======","======"+e.getMessage());
+                }
+            });
+    }
     @Test
     public void useAppContext() {
         // Context of the app under test.
