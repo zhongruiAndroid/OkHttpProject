@@ -2,7 +2,9 @@ package com.github.theokhttp;
 
 import android.net.Uri;
 
+import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +15,9 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
+import okio.Buffer;
+import okio.BufferedSource;
 
 /***
  *   created by android on 2019/9/20
@@ -23,7 +28,7 @@ public class TheRequestBuilder {
     private Request.Builder builder;
 //    private String requestMethod=TheOkHttpConfig.POST;
 
-    private Map paramsMap;
+    private Map queryParamsMap;
     public TheRequestBuilder() {
         this.builder = new Request.Builder();
     }
@@ -163,17 +168,43 @@ public class TheRequestBuilder {
 
     public <T extends Callback> void start(String url, T callback) {
         String newUrl=url;
-        if(paramsMap!=null){
+        if(queryParamsMap !=null){
             Uri.Builder uri=new Uri.Builder();
             uri.encodedPath(url);
 
-            Set<String> keySet = paramsMap.keySet();
+            Set<String> keySet = queryParamsMap.keySet();
             for (String key:keySet){
-                uri.appendQueryParameter(key,String.valueOf(paramsMap.get(key)));
+                uri.appendQueryParameter(key,String.valueOf(queryParamsMap.get(key)));
             }
             newUrl = uri.toString();
         }
         getOkHttpClient().newCall(url(newUrl).build()).enqueue(callback);
+    }
+    public TheOkResponse execute(String url){
+        TheOkResponse theOkResponse=new TheOkResponse();
+        String newUrl=url;
+        if(queryParamsMap !=null){
+            Uri.Builder uri=new Uri.Builder();
+            uri.encodedPath(url);
+
+            Set<String> keySet = queryParamsMap.keySet();
+            for (String key:keySet){
+                uri.appendQueryParameter(key,String.valueOf(queryParamsMap.get(key)));
+            }
+            newUrl = uri.toString();
+        }
+        try {
+            Response execute = getOkHttpClient().newCall(url(newUrl).build()).execute();
+            theOkResponse.response=execute;
+            BufferedSource source = execute.body().source();
+            source.request(Long.MAX_VALUE);
+            Buffer buffer = source.getBuffer();
+            theOkResponse.result= buffer.clone().readString(Charset.forName("UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            theOkResponse.exception=e;
+        }
+        return theOkResponse;
     }
 
     public TheRequestBuilder setOkHttpClient(OkHttpClient okHttpClient) {
@@ -190,7 +221,7 @@ public class TheRequestBuilder {
         if(paramsMap==null){
             return this;
         }
-        this.paramsMap = paramsMap;
+        this.queryParamsMap = paramsMap;
         return this;
     }
     /*private void setMethod() {

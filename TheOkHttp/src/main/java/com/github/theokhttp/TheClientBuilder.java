@@ -79,7 +79,7 @@ public class TheClientBuilder {
                         + "\nresponse headers->" + response.headers()
                         + "\nresponse body->" + resultString;
 
-                LG.print(Log.INFO,"TheOkHttp==",params+msg);
+                LG.print(Log.INFO,"TheOkHttp==",msg);
 
                 return response;
             }

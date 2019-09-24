@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.github.theokhttp.TheOkClientManager;
 import com.github.theokhttp.TheOkHttp;
 import com.github.theokhttp.TheOkHttpCallback;
+import com.github.theokhttp.TheOkResponse;
 
 import java.io.InputStream;
 
@@ -190,5 +191,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //         TheOkClientManager.get().cancelRequest(tag);
 //         TheOkClientManager.get().cancelRequest(client,tag);
 
+         TheOkResponse execute = TheOkHttp.get().execute(url);
      }
 }
