@@ -60,8 +60,8 @@ public class Main2Activity extends AppCompatActivity {
 
             @Override
             public void error(Exception e) {
-
                 tvPrompt.setText("请求失败");
+                tvContent.setText(e.getMessage());
             }
         });
     }
@@ -80,6 +80,7 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void error(Exception e) {
                 tvPrompt.setText("请求失败");
+                tvContent.setText(e.getMessage());
             }
         });
     }
@@ -96,6 +97,7 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void error(Exception e) {
                 tvPrompt.setText("请求失败");
+                tvContent.setText(e.getMessage());
             }
         });
     }
@@ -104,17 +106,17 @@ public class Main2Activity extends AppCompatActivity {
         String url = "https://wanandroid.com/wxarticle/list/408/1/json";
         Map<String, String> map = new HashMap<String, String>();
         map.put("k", "Java");
-
-        TheOkHttp.get(map).start(url, new MyCallback<String>() {
+        //该接口不支持post请求，不管了，这里反正能发送post，至于返回结果无所谓了
+        TheOkHttp.post(map).start(url, new MyCallback<String>() {
             @Override
             public void success(String response) {
                 tvContent.setText(response);
                 tvPrompt.setText("请求成功");
             }
-
             @Override
             public void error(Exception e) {
                 tvPrompt.setText("请求失败");
+                tvContent.setText(e.getMessage());
             }
         });
     }

@@ -59,6 +59,15 @@ public abstract class TheOkHttpCallback<T> implements Callback {
     @Override
     public void onResponse(Call call, Response response) throws IOException {
         ResponseBody body = response.body();
+        if(response.code()!=200){
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    failure(new Exception(response.message()));
+                }
+            });
+            return;
+        }
         if(isSaveContentType()){
             contentLength = body.contentLength();
             contentType   = body.contentType();

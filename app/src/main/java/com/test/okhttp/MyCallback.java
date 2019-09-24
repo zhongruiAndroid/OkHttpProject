@@ -20,9 +20,13 @@ public abstract class MyCallback<T> extends TheOkHttpCallback<String> {
         Type type = getSuperclassTypeParameter(getClass());
         if(type!=null&&type!=String.class){
             BaseBean<T> baseBean = new Gson().fromJson(response,BaseBean.class);
-            T data = baseBean.getData();
-            T obj= new Gson().fromJson(new Gson().toJson(data),type);
-            success(obj);
+            if(baseBean.getErrorCode()==0){
+                T data = baseBean.getData();
+                T obj= new Gson().fromJson(new Gson().toJson(data),type);
+                success(obj);
+            }else{
+                error(new Exception(baseBean.getErrorMsg()));
+            }
         }else{
             success((T) response);
         }
