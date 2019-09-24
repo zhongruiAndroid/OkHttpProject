@@ -197,9 +197,11 @@ public class TheRequestBuilder {
             Response execute = getOkHttpClient().newCall(url(newUrl).build()).execute();
             theOkResponse.response=execute;
             BufferedSource source = execute.body().source();
-            source.request(Long.MAX_VALUE);
-            Buffer buffer = source.getBuffer();
-            theOkResponse.result= buffer.clone().readString(Charset.forName("UTF-8"));
+            if(execute.code()==200){
+                source.request(Long.MAX_VALUE);
+                Buffer buffer = source.getBuffer();
+                theOkResponse.result= buffer.clone().readString(Charset.forName("UTF-8"));
+            }
         } catch (IOException e) {
             e.printStackTrace();
             theOkResponse.exception=e;

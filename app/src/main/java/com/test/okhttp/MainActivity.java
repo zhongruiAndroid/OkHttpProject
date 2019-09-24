@@ -191,6 +191,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //         TheOkClientManager.get().cancelRequest(tag);
 //         TheOkClientManager.get().cancelRequest(client,tag);
 
-         TheOkResponse execute = TheOkHttp.get().execute(url);
+         TheOkResponse execute = TheOkHttp
+                 .get()
+                 .addHeader("","")
+                 .execute(url);
      }
 }
