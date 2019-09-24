@@ -142,6 +142,20 @@ TheOkHttp
   });
 
 ```
+
+### 同步请求
+```java
+TheOkResponse execute = TheOkHttp
+				.get()或者post()
+				.此处省略N个官方api
+				.execute(url);
+
+public Exception exception;//请求异常时有值
+public Response response;//请求响应结果
+public String result;//请求状态码为200 才有值
+```
+
+
 #### 取消请求
 ```java
 //取消所有client的请求
