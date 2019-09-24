@@ -1,3 +1,4 @@
+#### 初始化
 ```java
 //必须初始化
 TheOkHttp.init();
@@ -72,6 +73,7 @@ TheOkHttp.postForm(body).start(url,callback);
 TheOkHttp.postMultipart(body).start(url,callback);
 ```
 
+### 初始化时
 #### 设置官方Okhttp Client参数(全局client，影响所有不设置setOkHttpClient的Request)
 ```java
 TheOkHttp.init()
@@ -94,6 +96,7 @@ TheOkHttp.init()
 //或者自行实例化一个client传进来
 TheOkHttp.init(okHttpClient);
 ```
+### 发送请求时
 #### 设置官方Okhttp Request参数
 ```java
 TheOkHttp
