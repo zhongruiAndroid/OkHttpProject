@@ -59,7 +59,10 @@ public class TheClientBuilder {
                 ResponseBody body = response.body();
                 String resultString="";
                 MediaType mediaType = body.contentType();
-                String subtype = mediaType.subtype();
+                String subtype=null;
+                if(mediaType!=null){
+                    subtype = mediaType.subtype();
+                }
                 if(TheOkHttp.single().getIgnoreContentSubType().contains(subtype)){
                     resultString=subtype;
                 }else{
@@ -68,6 +71,7 @@ public class TheClientBuilder {
                     Buffer buffer = source.getBuffer();
                     resultString= buffer.clone().readString(Charset.forName("UTF-8"));
                 }
+
 
                 double timeInterval=(endTime-startTime)/1e6d;
                 String msg = "url->" + request.url()
