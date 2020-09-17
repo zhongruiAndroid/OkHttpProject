@@ -25,19 +25,75 @@ import okio.BufferedSource;
 /***
  *   created by android on 2019/9/19
  */
-public abstract  class TheOkHttpCallback<T> extends SimpleCallback {
+public abstract class TheOkHttpCallback<T> implements Callback {
     public TheOkHttpCallback() {
     }
-    public boolean needCloneResponseString(){
+
+    public String onNoNetwork() {
+        return "无网络连接";
+    }
+
+    public String onTimeout() {
+        return "网络连接超时";
+    }
+
+    public String onHttpNotFound() {
+        return "请求路径错误";
+    }
+
+    public String onHttpServerError() {
+        return "服务器错误";
+    }
+
+    public boolean needCloneResponseString() {
         return false;
     }
+
     public abstract void response(T response);
 
     public abstract void failure(Exception e);
+
+
+    private void giveString(ResponseBody body) throws IOException {
+        String resultString;
+        if (!needCloneResponseString()) {
+            resultString = body.string();
+        } else {
+            BufferedSource source = body.source();
+            source.request(Long.MAX_VALUE);
+            Buffer buffer = source.getBuffer();
+            resultString = buffer.clone().readString(Charset.forName("UTF-8"));
+        }
+        response((T) resultString);
+    }
+
     @Override
-    public void success(Response response) throws IOException{
+    public void onFailure(Call call, IOException e) {
+        if (call.isCanceled()) {
+            return;
+        }
+        Exception outException = e;
+        if (NetworkUtils.getContext() != null && NetworkUtils.noNetwork()) {
+            outException = new NoNetworkException(onNoNetwork());
+        } else if (e instanceof SocketTimeoutException && "after".equals(e.getMessage())) {
+            outException = new TimeoutException(onTimeout());
+        }
+        failure(outException);
+    }
+
+    @Override
+    public void onResponse(Call call, Response response) throws IOException {
+        if (call.isCanceled()) {
+            return;
+        }
         int httpCode = response.code();
-        if (httpCode!= 200) {
+        if(httpCode== HttpURLConnection.HTTP_NOT_FOUND){
+            failure(new Exception(onHttpNotFound()));
+            return;
+        }else if(httpCode== HttpURLConnection.HTTP_INTERNAL_ERROR){
+            failure(new Exception(onHttpServerError()));
+            return;
+        }else if (httpCode != 200) {
             failure(new Exception(response.message()));
             return;
         }
@@ -56,25 +112,12 @@ public abstract  class TheOkHttpCallback<T> extends SimpleCallback {
         }
     }
 
-    @Override
-    public void error(Exception e) {
-        failure(e);
-    }
-
-
-    private void giveString(ResponseBody body) throws IOException {
-        String resultString;
-        if (!needCloneResponseString()) {
-            resultString = body.string();
-        } else {
-            BufferedSource source = body.source();
-            source.request(Long.MAX_VALUE);
-            Buffer buffer = source.getBuffer();
-            resultString = buffer.clone().readString(Charset.forName("UTF-8"));
+    public Type getType(Class<?> subclass) {
+        Type superclass = subclass.getGenericSuperclass();
+        if (superclass instanceof Class) {
+            throw new RuntimeException("Missing type parameter.");
         }
-        response((T) resultString);
+        ParameterizedType parameterized = (ParameterizedType) superclass;
+        return GsonTypeUtils.canonicalize(parameterized.getActualTypeArguments()[0]);
     }
-
-
-
 }
