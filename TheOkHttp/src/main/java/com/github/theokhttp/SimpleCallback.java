@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeoutException;
@@ -32,6 +33,12 @@ public abstract class SimpleCallback  implements Callback {
     public String onTimeout() {
         return "网络连接超时";
     }
+    public String onHttpNotFound() {
+        return "请求路径错误";
+    }
+    public String onHttpServerError() {
+        return "服务器错误";
+    }
     @Override
     public void onFailure(final Call call, final IOException e) {
         if (call.isCanceled()) {
@@ -49,6 +56,14 @@ public abstract class SimpleCallback  implements Callback {
     @Override
     public void onResponse(Call call, Response response) throws IOException {
         if (call.isCanceled()) {
+            return;
+        }
+        int httpCode = response.code();
+        if(httpCode== HttpURLConnection.HTTP_NOT_FOUND){
+            error(new Exception(onHttpNotFound()));
+            return;
+        }else if(httpCode== HttpURLConnection.HTTP_INTERNAL_ERROR){
+            error(new Exception(onHttpServerError()));
             return;
         }
         success(response);

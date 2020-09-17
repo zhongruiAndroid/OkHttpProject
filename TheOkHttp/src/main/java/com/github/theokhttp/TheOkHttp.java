@@ -42,7 +42,6 @@ public class TheOkHttp {
 
     private volatile OkHttpClient okHttpClient;
     private boolean isDebug;
-    private boolean cloneResponseString;
 
     private TheOkHttp() {
         this.handler = new Handler(Looper.getMainLooper());
@@ -76,14 +75,6 @@ public class TheOkHttp {
 
     public static void setDebug(boolean debug) {
         single().isDebug = debug;
-    }
-
-    public void setCloneResponseString(boolean cloneResponseString) {
-        this.cloneResponseString = cloneResponseString;
-    }
-
-    public boolean isCloneResponseString() {
-        return cloneResponseString;
     }
 
     public static boolean isDebug() {
