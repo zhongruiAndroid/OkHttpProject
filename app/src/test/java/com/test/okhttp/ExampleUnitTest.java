@@ -14,4 +14,14 @@ public class ExampleUnitTest {
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
     }
+    @Test
+    public void asf() {
+        String fileDirByUrl = getFileDirByUrl("http://game.com/game/index.html");
+        System.out.println(fileDirByUrl);
+    }
+    private String getFileDirByUrl(String urlString /*"http://game.com/game/index.html"*/) {
+        int lastSlash = urlString.lastIndexOf('/');
+        String server = urlString.substring(0, lastSlash + 1);
+        return server.replaceFirst("://", "/").replace(":", "#0A");
+    }
 }

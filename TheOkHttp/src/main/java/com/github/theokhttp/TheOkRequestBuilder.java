@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import okhttp3.CacheControl;
+import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
@@ -22,19 +23,20 @@ import okio.BufferedSource;
 /***
  *   created by android on 2019/9/20
  */
-public class TheRequestBuilder {
+public class TheOkRequestBuilder {
     private OkHttpClient okHttpClient;
-
+    private int retryCount = 0;
     private Request.Builder builder;
 //    private String requestMethod=TheOkHttpConfig.POST;
 
     private Map queryParamsMap;
-    public TheRequestBuilder() {
+
+    public TheOkRequestBuilder() {
         this.builder = new Request.Builder();
     }
 
-    public static TheRequestBuilder newInstance() {
-        return new TheRequestBuilder();
+    public static TheOkRequestBuilder newInstance() {
+        return new TheOkRequestBuilder();
     }
 
 //    public TheRequestBuilder setRequestMethod(String requestMethod) {
@@ -64,92 +66,101 @@ public class TheRequestBuilder {
                 .tag()*/
     }
 
-    public TheRequestBuilder post(RequestBody body) {
+    public TheOkRequestBuilder post(RequestBody body) {
         builder.post(body);
         return this;
     }
 
-    public TheRequestBuilder get() {
+    public TheOkRequestBuilder get() {
         builder.get();
         return this;
     }
 
-    protected TheRequestBuilder url(HttpUrl url) {
+    protected TheOkRequestBuilder url(HttpUrl url) {
         builder.url(url);
         return this;
     }
 
-    protected TheRequestBuilder url(String url) {
+    protected TheOkRequestBuilder url(String url) {
         builder.url(url);
         return this;
     }
 
-    protected TheRequestBuilder url(URL url) {
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    public TheOkRequestBuilder setRetryCount(int retryCount) {
+        this.retryCount = retryCount;
+        return this;
+    }
+
+    protected TheOkRequestBuilder url(URL url) {
         builder.url(url);
         return this;
     }
 
-    public TheRequestBuilder method(String method, RequestBody body) {
+    public TheOkRequestBuilder method(String method, RequestBody body) {
         builder.method(method, body);
         return this;
     }
 
-    public TheRequestBuilder addHeader(String name, String value) {
+    public TheOkRequestBuilder addHeader(String name, String value) {
         builder.addHeader(name, value);
         return this;
     }
 
-    public TheRequestBuilder cacheControl(CacheControl cacheControl) {
+    public TheOkRequestBuilder cacheControl(CacheControl cacheControl) {
         builder.cacheControl(cacheControl);
         return this;
     }
 
-    public TheRequestBuilder delete() {
+    public TheOkRequestBuilder delete() {
         builder.delete();
         return this;
     }
 
-    public TheRequestBuilder delete(RequestBody body) {
+    public TheOkRequestBuilder delete(RequestBody body) {
         builder.delete(body);
         return this;
     }
 
-    public TheRequestBuilder head() {
+    public TheOkRequestBuilder head() {
         builder.head();
         return this;
     }
 
-    public TheRequestBuilder header(String name, String value) {
+    public TheOkRequestBuilder header(String name, String value) {
         builder.header(name, value);
         return this;
     }
 
-    public TheRequestBuilder headers(Headers headers) {
+    public TheOkRequestBuilder headers(Headers headers) {
         builder.headers(headers);
         return this;
     }
 
-    public TheRequestBuilder patch(RequestBody body) {
+    public TheOkRequestBuilder patch(RequestBody body) {
         builder.patch(body);
         return this;
     }
 
-    public TheRequestBuilder put(RequestBody body) {
+    public TheOkRequestBuilder put(RequestBody body) {
         builder.put(body);
         return this;
     }
 
-    public TheRequestBuilder removeHeader(String name) {
+    public TheOkRequestBuilder removeHeader(String name) {
         builder.removeHeader(name);
         return this;
     }
 
-    public TheRequestBuilder tag(Object tag) {
+    public TheOkRequestBuilder tag(Object tag) {
         builder.tag(tag);
         return this;
     }
 
-    public <T> TheRequestBuilder tag(Class<? super T> type, T tag) {
+    public <T> TheOkRequestBuilder tag(Class<? super T> type, T tag) {
         builder.tag(type, tag);
         return this;
     }
@@ -159,68 +170,98 @@ public class TheRequestBuilder {
     }
 
     public <T extends Callback> void start(HttpUrl url, T callback) {
-        getOkHttpClient().newCall(url(url).build()).enqueue(callback);
+        newCall(url(url).build(), callback);
     }
 
     public <T extends Callback> void start(URL url, T callback) {
-        getOkHttpClient().newCall(url(url).build()).enqueue(callback);
+        newCall(url(url).build(), callback);
     }
 
     public <T extends Callback> void start(String url, T callback) {
-        String newUrl=url;
-        if(queryParamsMap !=null){
-            Uri.Builder uri=new Uri.Builder();
+        String newUrl = url;
+        if (queryParamsMap != null) {
+            Uri.Builder uri = new Uri.Builder();
             uri.encodedPath(url);
 
             Set<String> keySet = queryParamsMap.keySet();
-            for (String key:keySet){
-                uri.appendQueryParameter(key,String.valueOf(queryParamsMap.get(key)));
+            for (String key : keySet) {
+                uri.appendQueryParameter(key, String.valueOf(queryParamsMap.get(key)));
             }
             newUrl = uri.toString();
         }
-        getOkHttpClient().newCall(url(newUrl).build()).enqueue(callback);
+        newCall(url(newUrl).build(), callback);
     }
-    public TheOkResponse execute(String url){
-        TheOkResponse theOkResponse=new TheOkResponse();
-        String newUrl=url;
-        if(queryParamsMap !=null){
-            Uri.Builder uri=new Uri.Builder();
+
+    private <T extends Callback> void newCall(Request requestBuild, T callback) {
+        final int[] retryNum = new int[]{0};
+        getOkHttpClient().newCall(requestBuild).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                if (callback == null) {
+                    return;
+                }
+                if (retryCount > 0) {
+                    retryNum[0]++;
+                    if (retryNum[0] <= retryCount) {
+                        getOkHttpClient().newCall(requestBuild).equals(this);
+                    } else {
+                        callback.onFailure(call, e);
+                    }
+                } else {
+                    callback.onFailure(call, e);
+                }
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (callback != null) {
+                    callback.onResponse(call, response);
+                }
+            }
+        });
+    }
+
+    public TheOkResponse execute(String url) {
+        TheOkResponse theOkResponse = new TheOkResponse();
+        String newUrl = url;
+        if (queryParamsMap != null) {
+            Uri.Builder uri = new Uri.Builder();
             uri.encodedPath(url);
 
             Set<String> keySet = queryParamsMap.keySet();
-            for (String key:keySet){
-                uri.appendQueryParameter(key,String.valueOf(queryParamsMap.get(key)));
+            for (String key : keySet) {
+                uri.appendQueryParameter(key, String.valueOf(queryParamsMap.get(key)));
             }
             newUrl = uri.toString();
         }
         try {
             Response execute = getOkHttpClient().newCall(url(newUrl).build()).execute();
-            theOkResponse.response=execute;
+            theOkResponse.response = execute;
             BufferedSource source = execute.body().source();
-            if(execute.code()==200){
+            if (execute.code() == 200) {
                 source.request(Long.MAX_VALUE);
                 Buffer buffer = source.getBuffer();
-                theOkResponse.result= buffer.clone().readString(Charset.forName("UTF-8"));
+                theOkResponse.result = buffer.clone().readString(Charset.forName("UTF-8"));
             }
         } catch (IOException e) {
             e.printStackTrace();
-            theOkResponse.exception=e;
+            theOkResponse.exception = e;
         }
         return theOkResponse;
     }
 
-    public TheRequestBuilder setOkHttpClient(OkHttpClient okHttpClient) {
+    public TheOkRequestBuilder setOkHttpClient(OkHttpClient okHttpClient) {
         this.okHttpClient = okHttpClient;
         TheOkClientManager.get().add(okHttpClient);
         return this;
     }
 
     public OkHttpClient getOkHttpClient() {
-        return okHttpClient==null?TheOkHttp.single().getClient():okHttpClient;
+        return okHttpClient == null ? TheOkHttp.single().getClient() : okHttpClient;
     }
 
-    public TheRequestBuilder queryParamsMap(Map paramsMap) {
-        if(paramsMap==null){
+    public TheOkRequestBuilder queryParamsMap(Map paramsMap) {
+        if (paramsMap == null) {
             return this;
         }
         this.queryParamsMap = paramsMap;

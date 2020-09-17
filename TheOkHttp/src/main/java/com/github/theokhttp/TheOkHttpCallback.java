@@ -78,7 +78,6 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         }else if(type==byte[].class){
             postResponse((T) body.bytes());
         }else if(type==InputStream.class){
-            saveContentType=true;
             postResponse((T) body.byteStream());
         }else if(type==Reader.class){
             postResponse((T) body.charStream());
@@ -88,7 +87,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
     }
     private void giveString(ResponseBody body) throws IOException {
         String resultString;
-        if(true){
+        if(!TheOkHttp.single().isCloneResponseString()){
             resultString=body.string();
         }else{
             BufferedSource source = body.source();
@@ -112,15 +111,12 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         return saveContentType;
     }
 
-    private Type getType(Class<?> subclass) {
+    public Type getType(Class<?> subclass) {
         Type superclass = subclass.getGenericSuperclass();
         if (superclass instanceof Class) {
-            return null;
+            throw new RuntimeException("Missing type parameter.");
         }
-        if(superclass instanceof ParameterizedType){
-            ParameterizedType parameterized = (ParameterizedType) superclass;
-            return parameterized.getActualTypeArguments()[0];
-        }
-        return null;
+        ParameterizedType parameterized = (ParameterizedType) superclass;
+        return GsonTypeUtils.canonicalize(parameterized.getActualTypeArguments()[0]);
     }
 }

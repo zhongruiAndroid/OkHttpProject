@@ -36,12 +36,13 @@ public class TheOkHttp {
     }
     private volatile OkHttpClient okHttpClient;
     private boolean isDebug;
+    private boolean cloneResponseString;
     private TheOkHttp() {
         okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(TheOkHttpConfig.HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(TheOkHttpConfig.HTTP_WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TheOkHttpConfig.HTTP_READ_TIMEOUT, TimeUnit.SECONDS)
-                .addInterceptor(TheClientBuilder.appInterceptor).build();
+                .addInterceptor(TheOkClientBuilder.appInterceptor).build();
         TheOkClientManager.get().add(okHttpClient);
     }
     public static void addIgnoreContentSubType(String contentType){
@@ -58,6 +59,15 @@ public class TheOkHttp {
     public static void setDebug(boolean debug) {
         single().isDebug = debug;
     }
+
+    public void setCloneResponseString(boolean cloneResponseString) {
+        this.cloneResponseString = cloneResponseString;
+    }
+
+    public boolean isCloneResponseString() {
+        return cloneResponseString;
+    }
+
     public  static  boolean isDebug() {
         return single().isDebug;
     }
@@ -67,9 +77,9 @@ public class TheOkHttp {
     public static void init(OkHttpClient httpClient){
         TheOkHttp.single().setClient(httpClient);
     }
-    public static TheClientBuilder init(){
+    public static TheOkClientBuilder init(){
         TheOkHttp.single();
-        return new TheClientBuilder();
+        return new TheOkClientBuilder();
     }
     public OkHttpClient getClient(){
         return okHttpClient;
@@ -82,17 +92,17 @@ public class TheOkHttp {
 
 
     /*-----------------------------------FormBody-----------------------------------------*/
-    public static TheRequestBuilder postForm(){
-        return TheRequestBuilder.newInstance().post(new FormBody.Builder().build());
+    public static TheOkRequestBuilder postForm(){
+        return TheOkRequestBuilder.newInstance().post(new FormBody.Builder().build());
     }
-    public static TheRequestBuilder postForm(Map map){
+    public static TheOkRequestBuilder postForm(Map map){
         return postForm(map,false);
     }
-    public static TheRequestBuilder postForm(Map map,boolean paramEncode){
+    public static TheOkRequestBuilder postForm(Map map, boolean paramEncode){
         return postForm(getFormBodyBuilder(map,paramEncode).build());
     }
-    public static TheRequestBuilder postForm(FormBody formBody){
-        return TheRequestBuilder.newInstance().post(formBody);
+    public static TheOkRequestBuilder postForm(FormBody formBody){
+        return TheOkRequestBuilder.newInstance().post(formBody);
     }
 
     private static <T extends Callback>void buildRequest(Map map,String url,T callback){
@@ -112,35 +122,35 @@ public class TheOkHttp {
         startGet(uri.toString(),callback);
     }
     public static <T extends Callback>void startGet(String url,T callback){
-        TheRequestBuilder theRequestBuilder = TheRequestBuilder.newInstance();
+        TheOkRequestBuilder theRequestBuilder = TheOkRequestBuilder.newInstance();
         theRequestBuilder.url(url);
         theRequestBuilder.get();
         TheOkHttp.single().okHttpClient.newCall(theRequestBuilder.build()).enqueue(callback);
     }
-    public static TheRequestBuilder get(){
-        return TheRequestBuilder.newInstance().get();
+    public static TheOkRequestBuilder get(){
+        return TheOkRequestBuilder.newInstance().get();
     }
-    public static TheRequestBuilder get(Map map){
-        return TheRequestBuilder.newInstance().get().queryParamsMap(map);
+    public static TheOkRequestBuilder get(Map map){
+        return TheOkRequestBuilder.newInstance().get().queryParamsMap(map);
     }
     /*-----------------------------------MultipartBody-----------------------------------------*/
-    public static TheRequestBuilder postMultipart(MultipartBody multipartBody){
-        return TheRequestBuilder.newInstance().post(multipartBody);
+    public static TheOkRequestBuilder postMultipart(MultipartBody multipartBody){
+        return TheOkRequestBuilder.newInstance().post(multipartBody);
     }
     /*-----------------------------------RequestBody-----------------------------------------*/
-    public static TheRequestBuilder post(){
+    public static TheOkRequestBuilder post(){
         return post("");
     }
-    public static TheRequestBuilder post(Map map){
+    public static TheOkRequestBuilder post(Map map){
         JSONObject jsonObject=new JSONObject(map);
         return post(jsonObject.toString());
     }
-    public static TheRequestBuilder post(String json){
+    public static TheOkRequestBuilder post(String json){
         RequestBody requestBody = RequestBody.create(MediaType.get("application/json;charset=utf-8"), json);
-        return TheRequestBuilder.newInstance().post(requestBody);
+        return TheOkRequestBuilder.newInstance().post(requestBody);
     }
-    public static TheRequestBuilder post(RequestBody requestBody){
-        return TheRequestBuilder.newInstance().post(requestBody);
+    public static TheOkRequestBuilder post(RequestBody requestBody){
+        return TheOkRequestBuilder.newInstance().post(requestBody);
     }
     /**********************************************************************************************/
 

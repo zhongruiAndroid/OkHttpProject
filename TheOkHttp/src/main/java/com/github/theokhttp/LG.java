@@ -15,6 +15,42 @@ import android.util.Log;
     private static final String BOTTOM_BORDER = BOTTOM_LEFT_CORNER + DOUBLE_DIVIDER + DOUBLE_DIVIDER;
 
 
+    public static void i(String content){
+        i("LG",content);
+    }
+    public static void i(String tag,String content){
+        print(Log.INFO,tag,content);
+    }
+    public static void a(String content){
+        a("LG",content);
+    }
+    public static void a(String tag,String content){
+        print(Log.ASSERT,tag,content);
+    }
+    public static void d(String content){
+        d("LG",content);
+    }
+    public static void d(String tag,String content){
+        print(Log.DEBUG,tag,content);
+    }
+    public static void e(String content){
+        e("LG",content);
+    }
+    public static void e(String tag,String content){
+        print(Log.ERROR,tag,content);
+    }
+    public static void v(String content){
+        v("LG",content);
+    }
+    public static void v(String tag,String content){
+        print(Log.VERBOSE,tag,content);
+    }
+    public static void w(String content){
+        w("LG",content);
+    }
+    public static void w(String tag,String content){
+        print(Log.WARN,tag,content);
+    }
     public static void print(int priority,String tag,String msg   ){
         if(msg==null){
             Log.println(priority,tag,"msg is null");

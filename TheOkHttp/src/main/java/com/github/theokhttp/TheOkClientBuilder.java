@@ -38,7 +38,7 @@ import okio.BufferedSource;
  *   created by android on 2019/9/19
  */
 
-public class TheClientBuilder {
+public class TheOkClientBuilder {
 
     public static Interceptor appInterceptor=new Interceptor() {
         @Override
@@ -92,7 +92,7 @@ public class TheClientBuilder {
     };
 
     private OkHttpClient.Builder builder;
-    public TheClientBuilder( ) {
+    public TheOkClientBuilder( ) {
         builder = new OkHttpClient.Builder()
                 .connectTimeout(TheOkHttpConfig.HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(TheOkHttpConfig.HTTP_WRITE_TIMEOUT, TimeUnit.SECONDS)
@@ -100,173 +100,173 @@ public class TheClientBuilder {
                 .addInterceptor(appInterceptor)
         ;
     }
-    public TheClientBuilder addNetworkInterceptor(Interceptor interceptor) {
+    public TheOkClientBuilder addNetworkInterceptor(Interceptor interceptor) {
         builder.addNetworkInterceptor(interceptor);
         return this;
     }
 
-    public TheClientBuilder sslSocketFactory(SSLSocketFactory sslSocketFactory) {
+    public TheOkClientBuilder sslSocketFactory(SSLSocketFactory sslSocketFactory) {
         builder.sslSocketFactory(sslSocketFactory);
         return this;
     }
 
-    public TheClientBuilder sslSocketFactory(SSLSocketFactory sslSocketFactory, X509TrustManager trustManager) {
+    public TheOkClientBuilder sslSocketFactory(SSLSocketFactory sslSocketFactory, X509TrustManager trustManager) {
         builder.sslSocketFactory(sslSocketFactory,trustManager);
         return this;
     }
 
-    public TheClientBuilder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
+    public TheOkClientBuilder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
         builder.retryOnConnectionFailure(retryOnConnectionFailure);
         return this;
     }
-    public TheClientBuilder socketFactory(SocketFactory socketFactory) {
+    public TheOkClientBuilder socketFactory(SocketFactory socketFactory) {
         builder.socketFactory(socketFactory);
         return this;
     }
 
-    public TheClientBuilder connectionSpecs(List<ConnectionSpec> connectionSpecs) {
+    public TheOkClientBuilder connectionSpecs(List<ConnectionSpec> connectionSpecs) {
         builder.connectionSpecs(connectionSpecs);
         return this;
     }
 
-    public TheClientBuilder connectionPool(ConnectionPool connectionPool) {
+    public TheOkClientBuilder connectionPool(ConnectionPool connectionPool) {
         builder.connectionPool(connectionPool);
         return this;
     }
 
-    public TheClientBuilder certificatePinner(CertificatePinner certificatePinner) {
+    public TheOkClientBuilder certificatePinner(CertificatePinner certificatePinner) {
         builder.certificatePinner(certificatePinner);
         return this;
     }
 
-    public TheClientBuilder callTimeout(long timeout, TimeUnit unit) {
+    public TheOkClientBuilder callTimeout(long timeout, TimeUnit unit) {
         builder.callTimeout(timeout,unit);
         return this;
     }
 
-    public TheClientBuilder callTimeout(Duration duration) {
+    public TheOkClientBuilder callTimeout(Duration duration) {
         builder.callTimeout(duration);
         return this;
     }
 
-    public TheClientBuilder cache(Cache cache) {
+    public TheOkClientBuilder cache(Cache cache) {
         builder.cache(cache);
         return this;
     }
 
-    public TheClientBuilder authenticator(Authenticator authenticator) {
+    public TheOkClientBuilder authenticator(Authenticator authenticator) {
         builder.authenticator(authenticator);
         return this;
     }
 
-    public TheClientBuilder addInterceptor(Interceptor interceptor) {
+    public TheOkClientBuilder addInterceptor(Interceptor interceptor) {
         builder.addInterceptor(interceptor);
         return this;
     }
 
-    public TheClientBuilder cookieJar(CookieJar cookieJar) {
+    public TheOkClientBuilder cookieJar(CookieJar cookieJar) {
         builder.cookieJar(cookieJar);
         return this;
     }
 
-    public TheClientBuilder dispatcher(Dispatcher dispatcher) {
+    public TheOkClientBuilder dispatcher(Dispatcher dispatcher) {
         builder.dispatcher(dispatcher);
         return this;
     }
 
-    public TheClientBuilder dns(Dns dns) {
+    public TheOkClientBuilder dns(Dns dns) {
         builder.dns(dns);
         return this;
     }
 
-    public TheClientBuilder eventListener(EventListener eventListener) {
+    public TheOkClientBuilder eventListener(EventListener eventListener) {
         builder.eventListener(eventListener);
         return this;
     }
 
-    public TheClientBuilder eventListenerFactory(EventListener.Factory eventListenerFactory) {
+    public TheOkClientBuilder eventListenerFactory(EventListener.Factory eventListenerFactory) {
         builder.eventListenerFactory(eventListenerFactory);
         return this;
     }
 
-    public TheClientBuilder followRedirects(boolean followRedirects) {
+    public TheOkClientBuilder followRedirects(boolean followRedirects) {
         builder.followRedirects(followRedirects);
         return this;
     }
 
-    public TheClientBuilder followSslRedirects(boolean followProtocolRedirects) {
+    public TheOkClientBuilder followSslRedirects(boolean followProtocolRedirects) {
         builder.followSslRedirects(followProtocolRedirects);
         return this;
     }
 
-    public TheClientBuilder hostnameVerifier(HostnameVerifier hostnameVerifier) {
+    public TheOkClientBuilder hostnameVerifier(HostnameVerifier hostnameVerifier) {
         builder.hostnameVerifier(hostnameVerifier);
         return this;
     }
 
-    public TheClientBuilder pingInterval(long interval, TimeUnit unit) {
+    public TheOkClientBuilder pingInterval(long interval, TimeUnit unit) {
         builder.pingInterval(interval,unit);
         return this;
     }
 
-    public TheClientBuilder pingInterval(Duration duration) {
+    public TheOkClientBuilder pingInterval(Duration duration) {
         builder.pingInterval(duration);
         return this;
     }
 
-    public TheClientBuilder protocols(List<Protocol> protocols) {
+    public TheOkClientBuilder protocols(List<Protocol> protocols) {
         builder.protocols(protocols);
         return this;
     }
 
-    public TheClientBuilder proxy(Proxy proxy) {
+    public TheOkClientBuilder proxy(Proxy proxy) {
         builder.proxy(proxy);
         return this;
     }
 
-    public TheClientBuilder proxyAuthenticator(Authenticator proxyAuthenticator) {
+    public TheOkClientBuilder proxyAuthenticator(Authenticator proxyAuthenticator) {
         builder.proxyAuthenticator(proxyAuthenticator);
         return this;
     }
 
-    public TheClientBuilder proxySelector(ProxySelector proxySelector) {
+    public TheOkClientBuilder proxySelector(ProxySelector proxySelector) {
         builder.proxySelector(proxySelector);
         return this;
     }
 
 
-    public TheClientBuilder connectTimeout(long timeoutSeconds) {
+    public TheOkClientBuilder connectTimeout(long timeoutSeconds) {
         return connectTimeout(timeoutSeconds, TimeUnit.SECONDS);
     }
-    public TheClientBuilder connectTimeout(long timeout, TimeUnit unit) {
+    public TheOkClientBuilder connectTimeout(long timeout, TimeUnit unit) {
         builder.connectTimeout(timeout,unit);
         return this;
     }
-    public TheClientBuilder connectTimeout(Duration duration) {
+    public TheOkClientBuilder connectTimeout(Duration duration) {
         builder.connectTimeout(duration);
         return this;
     }
 
-    public TheClientBuilder writeTimeout(long timeoutSeconds) {
+    public TheOkClientBuilder writeTimeout(long timeoutSeconds) {
         return writeTimeout(timeoutSeconds, TimeUnit.SECONDS);
     }
-    public TheClientBuilder writeTimeout(long timeout, TimeUnit unit) {
+    public TheOkClientBuilder writeTimeout(long timeout, TimeUnit unit) {
         builder.writeTimeout(timeout,unit);
         return this;
     }
-    public TheClientBuilder writeTimeout(Duration duration) {
+    public TheOkClientBuilder writeTimeout(Duration duration) {
         builder.writeTimeout(duration);
         return this;
     }
 
-    public TheClientBuilder readTimeout(long timeoutSeconds) {
+    public TheOkClientBuilder readTimeout(long timeoutSeconds) {
         return readTimeout(timeoutSeconds, TimeUnit.SECONDS);
     }
-    public TheClientBuilder readTimeout(long timeout, TimeUnit unit) {
+    public TheOkClientBuilder readTimeout(long timeout, TimeUnit unit) {
         builder.readTimeout(timeout,unit);
         return this;
     }
-    public TheClientBuilder readTimeout(Duration duration) {
+    public TheOkClientBuilder readTimeout(Duration duration) {
         builder.readTimeout(duration);
         return this;
     }

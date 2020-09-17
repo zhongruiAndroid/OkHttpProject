@@ -70,6 +70,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     private void getImage() {
         String imageUrl="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1568891094290&di=4ebd1969fe5c790f42febb4ba4f1e6d6&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201305%2F26%2F20130526140022_5fMJe.jpeg";
+        TheOkHttp.postMultipart(null).start((String) null, new TheOkHttpCallback<Object>() {
+            @Override
+            public void response(Object response) {
+
+            }
+            @Override
+            public void failure(Exception e) {
+
+            }
+        });
+
         TheOkHttp.get().tag("a").start(imageUrl, new TheOkHttpCallback<InputStream>() {
             @Override
             public void response(InputStream response) {
@@ -170,8 +181,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                      }
                  });
-
-
 //        TheOkHttp.post().start(url);
 //        TheOkHttp.postForm(null).start(url);
 //        TheOkHttp.postMultipart(null).start(url);
