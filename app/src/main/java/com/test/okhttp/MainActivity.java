@@ -15,12 +15,20 @@ import com.github.theokhttp.TheOkHttp;
 import com.github.theokhttp.TheOkHttpCallback;
 import com.github.theokhttp.TheOkResponse;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import okhttp3.CacheControl;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
 import okhttp3.Headers;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     ImageView ivTest;
@@ -96,20 +104,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             //手动重写方法
             public void cancel(Exception e) {
-                super.cancel(e);
                 //请求取消之后不会执行failure();
                 showMsg("请求取消");
                 ivTest.setImageBitmap(null);
             }
             //手动重写方法
             public void timeout(Exception e) {
-                super.timeout(e);
                 //会继续执行failure();
                 showMsg("连接超时");
             }
             //手动重写方法
             public void noNetwork(Exception e) {
-                super.noNetwork(e);
                 //会继续执行failure();
                 showMsg("无网络连接");
             }
@@ -131,6 +136,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
          OkHttpClient okHttpClient=new OkHttpClient.Builder()
                  .cache(null)//设置缓存
+                 .cookieJar(new CookieJar() {
+                     @Override
+                     public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+
+                     }
+                     @Override
+                     public List<Cookie> loadForRequest(HttpUrl url) {
+                         return null;
+                     }
+                 })
                  //...省略N个官方api
                  .build();
 
@@ -171,13 +186,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                  //如果请求图片，可以设置泛型为InputStream
                  //因为没有依赖其他json解析库,所以TheOkHttpCallback泛型只支持  String  byte[]  InputStream  Reader
                  //如果想获取某个具体的对象，请继承TheOkHttpCallback 返回String,使用gson转换
-                 .start(url, new TheOkHttpCallback<InputStream>() {
+                 .start(url, new Callback() {
                      @Override
-                     public void response(InputStream response) {
+                     public void onFailure(Call call, IOException e) {
 
                      }
                      @Override
-                     public void failure(Exception e) {
+                     public void onResponse(Call call, Response response) throws IOException {
 
                      }
                  });

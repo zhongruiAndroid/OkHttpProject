@@ -10,6 +10,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeoutException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -23,44 +24,15 @@ import okio.BufferedSource;
 /***
  *   created by android on 2019/9/19
  */
-public abstract class TheOkHttpCallback<T> implements Callback {
-    protected Handler handler;
-    public long contentLength;
-    public MediaType contentType;
-    private boolean saveContentType;
+public abstract  class TheOkHttpCallback<T> extends SimpleCallback {
 
     public TheOkHttpCallback() {
-        this.handler =new Handler(Looper.getMainLooper());
-    }
-    public abstract void response(T response);
-    public abstract void failure(Exception e);
-    public void  cancel(Exception e){};
-    public void  noNetwork(Exception e){};
-    public void  timeout(Exception e){};
-    @Override
-    public void onFailure(final Call call, final IOException e) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if(e instanceof SocketTimeoutException &&"after".equals(e.getMessage())){
-                    timeout(e);
-                }
-                if(call.isCanceled()){
-                    cancel(e);
-                    return;
-                }
-                if(NetworkUtils.getContext()!=null&&NetworkUtils.noNetwork()){
-                    noNetwork(e);
-                }
-                failure(e);
-            }
-        });
     }
     @Override
-    public void onResponse(Call call, Response response) throws IOException {
+    public void success(Response response) throws IOException{
         ResponseBody body = response.body();
-        if(response.code()!=200){
-            handler.post(new Runnable() {
+        if (response.code() != 200) {
+            TheOkHttp.getHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     failure(new Exception(response.message()));
@@ -68,38 +40,62 @@ public abstract class TheOkHttpCallback<T> implements Callback {
             });
             return;
         }
-        if(isSaveContentType()){
-            contentLength = body.contentLength();
-            contentType   = body.contentType();
-        }
         Type type = getType(this.getClass());
-        if(type==null||type==String.class||type==Object.class){
+        if (type == null || type == String.class || type == Object.class) {
             giveString(body);
-        }else if(type==byte[].class){
+        } else if (type == byte[].class) {
             postResponse((T) body.bytes());
-        }else if(type==InputStream.class){
+        } else if (type == InputStream.class) {
             postResponse((T) body.byteStream());
-        }else if(type==Reader.class){
+        } else if (type == Reader.class) {
             postResponse((T) body.charStream());
-        }else{
+        } else {
             giveString(body);
         }
     }
+
+    @Override
+    public void error(Exception e) {
+        TheOkHttp.single().getHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                Exception outException = e;
+                if (NetworkUtils.getContext() != null && NetworkUtils.noNetwork()) {
+                    outException = new NoNetworkException(onNoNetwork());
+                } else if (e instanceof SocketTimeoutException && "after".equals(e.getMessage())) {
+                    outException = new TimeoutException(onTimeout());
+                }
+                failure(outException);
+            }
+        });
+    }
+
+    public abstract void response(T response);
+
+    public abstract void failure(Exception e);
+
+    public String onNoNetwork() {
+        return "无网络连接";
+    }
+
+    public String onTimeout() {
+        return "网络连接超时";
+    }
     private void giveString(ResponseBody body) throws IOException {
         String resultString;
-        if(!TheOkHttp.single().isCloneResponseString()){
-            resultString=body.string();
-        }else{
+        if (!TheOkHttp.single().isCloneResponseString()) {
+            resultString = body.string();
+        } else {
             BufferedSource source = body.source();
             source.request(Long.MAX_VALUE);
             Buffer buffer = source.getBuffer();
-            resultString= buffer.clone().readString(Charset.forName("UTF-8"));
+            resultString = buffer.clone().readString(Charset.forName("UTF-8"));
         }
         postResponse((T) resultString);
     }
 
     private void postResponse(final T result) {
-        handler.post(new Runnable() {
+        TheOkHttp.single().getHandler().post(new Runnable() {
             @Override
             public void run() {
                 response(result);
@@ -107,16 +103,4 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         });
     }
 
-    public boolean isSaveContentType() {
-        return saveContentType;
-    }
-
-    public Type getType(Class<?> subclass) {
-        Type superclass = subclass.getGenericSuperclass();
-        if (superclass instanceof Class) {
-            throw new RuntimeException("Missing type parameter.");
-        }
-        ParameterizedType parameterized = (ParameterizedType) superclass;
-        return GsonTypeUtils.canonicalize(parameterized.getActualTypeArguments()[0]);
-    }
 }
