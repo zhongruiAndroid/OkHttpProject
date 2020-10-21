@@ -75,7 +75,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         Exception outException = e;
         if (NetworkUtils.getContext() != null && NetworkUtils.noNetwork()) {
             outException = new NoNetworkException(onNoNetwork());
-        } else if (e instanceof SocketTimeoutException && "after".equals(e.getMessage())) {
+        } else if (e instanceof SocketTimeoutException && e.getMessage().indexOf("after")!=-1) {
             outException = new TimeoutException(onTimeout());
         }
         failure(outException);
@@ -101,7 +101,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         Type type = getType(this.getClass());
         if (type == null || type == String.class || type == Object.class) {
             giveString(body);
-        } else if (type == byte[].class||type.getTypeName().indexOf("byte")!=-1||type.getTypeName().indexOf("Byte")!=-1) {
+        } else if (type == byte[].class||type.getTypeName().indexOf("byte")!=-1) {
             response((T) body.bytes());
         } else if (type == InputStream.class) {
             response((T) body.byteStream());
