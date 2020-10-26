@@ -75,7 +75,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         Exception outException = e;
         if (NetworkUtils.getContext() != null && NetworkUtils.noNetwork()) {
             outException = new NoNetworkException(onNoNetwork());
-        } else if (e instanceof SocketTimeoutException && e.getMessage().indexOf("after")!=-1) {
+        } else if (e instanceof SocketTimeoutException && e.getMessage().indexOf("after") != -1) {
             outException = new TimeoutException(onTimeout());
         }
         failure(outException);
@@ -87,13 +87,13 @@ public abstract class TheOkHttpCallback<T> implements Callback {
             return;
         }
         int httpCode = response.code();
-        if(httpCode== HttpURLConnection.HTTP_NOT_FOUND){
+        if (httpCode == HttpURLConnection.HTTP_NOT_FOUND) {
             failure(new Exception(onHttpNotFound()));
             return;
-        }else if(httpCode== HttpURLConnection.HTTP_INTERNAL_ERROR){
+        } else if (httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR) {
             failure(new Exception(onHttpServerError()));
             return;
-        }else if (httpCode != 200) {
+        } else if (httpCode != 200) {
             failure(new Exception(response.message()));
             return;
         }
@@ -101,12 +101,12 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         Type type = getType(this.getClass());
         if (type == null || type == String.class || type == Object.class) {
             giveString(body);
-        } else if (type == byte[].class||(type.getTypeName()!=null&&type.getTypeName().indexOf("byte")!=-1)) {
-            response((T) body.bytes());
         } else if (type == InputStream.class) {
             response((T) body.byteStream());
         } else if (type == Reader.class) {
             response((T) body.charStream());
+        } else if (type == byte[].class || (type.getTypeName() != null && type.getTypeName().indexOf("byte") != -1)) {
+            response((T) body.bytes());
         } else {
             giveString(body);
         }
