@@ -101,7 +101,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         Type type = getType(this.getClass());
         if (type == null || type == String.class || type == Object.class) {
             giveString(body);
-        } else if (type == byte[].class||type.getTypeName().indexOf("byte")!=-1) {
+        } else if (type == byte[].class||(type.getTypeName()!=null&&type.getTypeName().indexOf("byte")!=-1)) {
             response((T) body.bytes());
         } else if (type == InputStream.class) {
             response((T) body.byteStream());
