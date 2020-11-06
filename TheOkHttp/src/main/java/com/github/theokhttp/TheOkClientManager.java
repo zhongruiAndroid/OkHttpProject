@@ -1,7 +1,7 @@
 package com.github.theokhttp;
 
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,9 +14,9 @@ import okhttp3.OkHttpClient;
 public class TheOkClientManager {
     private static TheOkClientManager singleObj;
     private volatile Set<OkHttpClient> clientSet;
-
+    private int fullSize=10;
     private TheOkClientManager() {
-        clientSet = new HashSet<>();
+        clientSet = new LinkedHashSet<>();
     }
 
     public static TheOkClientManager get() {
@@ -29,8 +29,14 @@ public class TheOkClientManager {
         }
         return singleObj;
     }
+    public void setFullSize(int fullSize) {
+        this.fullSize = fullSize;
+    }
 
     public void add(OkHttpClient client) {
+        if(clientSet.size()>fullSize){
+            clientSet.clear();
+        }
         clientSet.add(client);
     }
     public void remove(OkHttpClient client) {
@@ -55,15 +61,11 @@ public class TheOkClientManager {
         Iterator<OkHttpClient> iterator = clientSet.iterator();
         while (iterator.hasNext()){
             OkHttpClient next = iterator.next();
-            cancelRequest(next,tag,false);
+            cancelRequest(next,tag);
         }
     }
-
-    public void cancelRequest(OkHttpClient client, Object tag ) {
-        cancelRequest(client,tag,true);
-    }
-    private void cancelRequest(OkHttpClient client, Object tag,boolean needCheckNull) {
-        if (needCheckNull&&tag == null) {
+    private void cancelRequest(OkHttpClient client, Object tag) {
+        if (tag == null) {
             return;
         }
         List<Call> calls = client.dispatcher().queuedCalls();

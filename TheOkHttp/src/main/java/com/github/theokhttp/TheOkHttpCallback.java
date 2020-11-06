@@ -1,8 +1,5 @@
 package com.github.theokhttp;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -15,7 +12,6 @@ import java.util.concurrent.TimeoutException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
@@ -73,7 +69,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
             return;
         }
         Exception outException = e;
-        if (NetworkUtils.getContext() != null && NetworkUtils.noNetwork()) {
+        if (TheOkHttpNetworkUtils.getContext() != null && TheOkHttpNetworkUtils.noNetwork()) {
             outException = new NoNetworkException(onNoNetwork());
         } else if (e instanceof SocketTimeoutException && e.getMessage().indexOf("after") != -1) {
             outException = new TimeoutException(onTimeout());

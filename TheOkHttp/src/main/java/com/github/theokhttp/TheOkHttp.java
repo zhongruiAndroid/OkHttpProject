@@ -82,7 +82,7 @@ public class TheOkHttp {
     }
 
     public static void setNetworkHelper(Context context) {
-        NetworkUtils.init(context);
+        TheOkHttpNetworkUtils.init(context);
     }
 
     public static void init(OkHttpClient httpClient) {

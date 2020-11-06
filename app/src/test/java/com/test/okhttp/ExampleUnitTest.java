@@ -24,4 +24,10 @@ public class ExampleUnitTest {
         String server = urlString.substring(0, lastSlash + 1);
         return server.replaceFirst("://", "/").replace(":", "#0A");
     }
+    @Test
+    public void asfd( ) {
+    }
+    public void test(Object o){
+        System.out.println(o.equals("a"));
+    }
 }

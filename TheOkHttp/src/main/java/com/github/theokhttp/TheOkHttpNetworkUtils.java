@@ -6,7 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 
-public class NetworkUtils {
+public class TheOkHttpNetworkUtils {
     private static Context context;
     public static Context getContext() {
         return context;
