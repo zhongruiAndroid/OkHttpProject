@@ -24,7 +24,6 @@ import okhttp3.RequestBody;
  *   created by android on 2019/9/19
  */
 public class TheOkHttp {
-    private Handler handler;
     private List<String> ignoreContentSubType = new ArrayList<>();
     private static TheOkHttp singleObj;
 
@@ -44,7 +43,6 @@ public class TheOkHttp {
     private boolean isDebug;
 
     private TheOkHttp() {
-        this.handler = new Handler(Looper.getMainLooper());
         okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(TheOkHttpConfig.HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(TheOkHttpConfig.HTTP_WRITE_TIMEOUT, TimeUnit.SECONDS)
@@ -53,13 +51,7 @@ public class TheOkHttp {
         TheOkClientManager.get().add(okHttpClient);
     }
 
-    public Handler getTheHandler() {
-        return handler;
-    }
 
-    public static Handler getHandler() {
-        return single().getTheHandler();
-    }
 
     public static void addIgnoreContentSubType(String contentType) {
         TheOkHttp.single().ignoreContentSubType.add(contentType);
