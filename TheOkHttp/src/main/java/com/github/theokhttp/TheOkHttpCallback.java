@@ -106,6 +106,12 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         } else {
             giveString(body);
         }
+        if (body != null) {
+            body.close();
+        }
+        if (response != null) {
+            response.close();
+        }
     }
 
     public Type getType(Class<?> subclass) {
