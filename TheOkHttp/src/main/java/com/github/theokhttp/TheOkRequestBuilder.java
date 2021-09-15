@@ -17,6 +17,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
 
@@ -222,6 +223,10 @@ public class TheOkRequestBuilder {
     }
 
     public TheOkResponse execute(String url) {
+        return execute(url, true);
+    }
+
+    public TheOkResponse execute(String url, boolean needCloneResponseString) {
         TheOkResponse theOkResponse = new TheOkResponse();
         String newUrl = url;
         if (queryParamsMap != null) {
@@ -237,11 +242,23 @@ public class TheOkRequestBuilder {
         try {
             Response execute = getOkHttpClient().newCall(url(newUrl).build()).execute();
             theOkResponse.response = execute;
-            BufferedSource source = execute.body().source();
-            if (execute.code() == 200) {
-                source.request(Long.MAX_VALUE);
-                Buffer buffer = source.getBuffer();
-                theOkResponse.result = buffer.clone().readString(Charset.forName("UTF-8"));
+            int code = execute.code();
+            theOkResponse.statusCode = code;
+            ResponseBody body = execute.body();
+            if (body != null) {
+                theOkResponse.body = body;
+                if (code == 200) {
+                    if (needCloneResponseString) {
+                        BufferedSource source = body.source();
+
+                        source.request(Long.MAX_VALUE);
+                        Buffer buffer = source.getBuffer();
+                        theOkResponse.result = buffer.clone().readString(Charset.forName("UTF-8"));
+
+                    } else {
+                        theOkResponse.result = body.string();
+                    }
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
