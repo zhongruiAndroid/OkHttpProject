@@ -50,7 +50,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
     public abstract void failure(Exception e);
 
 
-    private void giveString(ResponseBody body) throws IOException {
+    private String giveString(ResponseBody body) throws IOException {
         String resultString;
         if (!needCloneResponseString()) {
             resultString = body.string();
@@ -60,7 +60,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
             Buffer buffer = source.getBuffer();
             resultString = buffer.clone().readString(Charset.forName("UTF-8"));
         }
-        response((T) resultString);
+        return  resultString;
     }
 
     @Override
@@ -84,34 +84,61 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         }
         int httpCode = response.code();
         if (httpCode == HttpURLConnection.HTTP_NOT_FOUND) {
+            close(response);
             failure(new Exception(onHttpNotFound()));
             return;
         } else if (httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR) {
+            close(response);
             failure(new Exception(onHttpServerError()));
             return;
         } else if (httpCode != 200) {
-            failure(new Exception(response.message()));
+            String message = response.message();
+            close(response);
+            failure(new Exception(message));
             return;
         }
         ResponseBody body = response.body();
         Type type = getType(this.getClass());
         if (type == null || type == String.class || type == Object.class) {
-            giveString(body);
+            String string = giveString(body);
+            close(body,response);
+            response((T) string);
         } else if (type == InputStream.class) {
-            response((T) body.byteStream());
+            T t = (T) body.byteStream();
+            close(body,response);
+            response(t);
         } else if (type == Reader.class) {
-            response((T) body.charStream());
+            T t = (T) body.charStream();
+            close(body,response);
+            response(t);
         } else if (type == byte[].class || (type.toString() != null && type.toString().indexOf("byte") != -1)) {
-            response((T) body.bytes());
+            T bytes = (T) body.bytes();
+            close(body,response);
+            response(bytes);
         } else {
-            giveString(body);
+            String string = giveString(body);
+            close(body,response);
+            response((T) string);
         }
+    }
+
+    public static void close(ResponseBody body) {
         if (body != null) {
             body.close();
         }
+
+    }
+
+    public static void close(Response response) {
+
         if (response != null) {
             response.close();
         }
+    }
+
+    public static void close(ResponseBody body, Response response) {
+        close(body);
+        close(response);
     }
 
     public Type getType(Class<?> subclass) {
