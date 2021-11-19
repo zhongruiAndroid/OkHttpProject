@@ -66,9 +66,12 @@ public class TheOkHttp {
     }
 
     public static void setDebug(boolean debug) {
-        single().isDebug = debug;
+        setDebug(debug,"TheOkHttp==");
     }
-
+    public static void setDebug(boolean debug,String logTag) {
+        single().isDebug = debug;
+        LG.TAG=logTag;
+    }
     public static boolean isDebug() {
         return single().isDebug;
     }
