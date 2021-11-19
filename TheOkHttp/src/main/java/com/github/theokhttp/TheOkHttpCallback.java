@@ -47,10 +47,13 @@ public abstract class TheOkHttpCallback<T> implements Callback {
 
     public abstract void response(T response);
 
-    public abstract void failure(Exception e);
+    public abstract void failure(String errorString, Exception e);
 
 
     private String giveString(ResponseBody body) throws IOException {
+        if (body == null) {
+            return "";
+        }
         String resultString;
         if (!needCloneResponseString()) {
             resultString = body.string();
@@ -60,7 +63,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
             Buffer buffer = source.getBuffer();
             resultString = buffer.clone().readString(Charset.forName("UTF-8"));
         }
-        return  resultString;
+        return resultString;
     }
 
     @Override
@@ -74,7 +77,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         } else if (e instanceof SocketTimeoutException && e.getMessage().indexOf("after") != -1) {
             outException = new TimeoutException(onTimeout());
         }
-        failure(outException);
+        failure("", outException);
     }
 
     @Override
@@ -84,40 +87,43 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         }
         int httpCode = response.code();
         if (httpCode == HttpURLConnection.HTTP_NOT_FOUND) {
+            String s = giveString(response.body());
             close(response);
-            failure(new Exception(onHttpNotFound()));
+            failure(s, new Exception(onHttpNotFound()));
             return;
         } else if (httpCode == HttpURLConnection.HTTP_INTERNAL_ERROR) {
+            String s = giveString(response.body());
             close(response);
-            failure(new Exception(onHttpServerError()));
+            failure(s, new Exception(onHttpServerError()));
             return;
         } else if (httpCode != 200) {
+            String s = giveString(response.body());
             String message = response.message();
             close(response);
-            failure(new Exception(message));
+            failure(s, new Exception(message));
             return;
         }
         ResponseBody body = response.body();
         Type type = getType(this.getClass());
         if (type == null || type == String.class || type == Object.class) {
             String string = giveString(body);
-            close(body,response);
+            close(body, response);
             response((T) string);
         } else if (type == InputStream.class) {
             T t = (T) body.byteStream();
-            close(body,response);
+            close(body, response);
             response(t);
         } else if (type == Reader.class) {
             T t = (T) body.charStream();
-            close(body,response);
+            close(body, response);
             response(t);
         } else if (type == byte[].class || (type.toString() != null && type.toString().indexOf("byte") != -1)) {
             T bytes = (T) body.bytes();
-            close(body,response);
+            close(body, response);
             response(bytes);
         } else {
             String string = giveString(body);
-            close(body,response);
+            close(body, response);
             response((T) string);
         }
     }
