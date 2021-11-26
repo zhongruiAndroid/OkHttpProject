@@ -32,7 +32,7 @@ public abstract class MyCallback<T> extends TheOkHttpCallback<String> {
         }
     }
     @Override
-    public void failure(Exception e) {
+    public void failure(String errorString,Exception e) {
         error(e);
     }
 
