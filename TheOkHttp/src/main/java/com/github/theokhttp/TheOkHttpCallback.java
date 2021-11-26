@@ -74,7 +74,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
         Exception outException = e;
         if (TheOkHttpNetworkUtils.getContext() != null && TheOkHttpNetworkUtils.noNetwork()) {
             outException = new NoNetworkException(onNoNetwork());
-        } else if (e instanceof SocketTimeoutException && e.getMessage().indexOf("after") != -1) {
+        } else if (e instanceof SocketTimeoutException && e.getMessage()!=null&&(e.getMessage().indexOf("after") != -1||e.getMessage().indexOf("timeout")!=-1)) {
             outException = new TimeoutException(onTimeout());
         }
         failure("", outException);
