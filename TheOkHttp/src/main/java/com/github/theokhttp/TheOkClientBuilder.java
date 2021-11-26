@@ -74,8 +74,8 @@ public class TheOkClientBuilder {
 
 
                 double timeInterval=(endTime-startTime)/1e6d;
-                String msg = "url->" + request.url()
-                        +"\nparams->" + params
+                String msg = "url->" + LG.getURLDecoderString(request.url().toString())
+                        +"\nparams->" + LG.getURLDecoderString(params)
                         + "\nmethod->"+request.method()
                         + "\ntime->" + timeInterval+"ms"
                         + "\nheaders->" + request.headers()

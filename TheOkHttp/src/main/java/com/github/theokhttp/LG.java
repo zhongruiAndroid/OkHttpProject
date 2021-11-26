@@ -2,6 +2,8 @@ package com.github.theokhttp;
 
 import android.util.Log;
 
+import java.io.UnsupportedEncodingException;
+
 /***
  *   created by android on 2019/8/26
  */
@@ -59,7 +61,19 @@ class LG {
     public static void w(String content) {
         w(TAG, content);
     }
-
+    public static String getURLDecoderString(String str) {
+        String result = "";
+        if (null == str) {
+            return "";
+        }
+        try {
+            result = java.net.URLDecoder.decode(str, "UTF-8");
+            return result;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
     public static void w(String tag, String content) {
         print(Log.WARN, tag, content);
     }
