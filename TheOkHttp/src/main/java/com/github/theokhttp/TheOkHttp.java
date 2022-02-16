@@ -80,17 +80,16 @@ public class TheOkHttp {
         TheOkHttpNetworkUtils.init(context);
     }
 
-    public static void init(OkHttpClient httpClient) {
+    public static void initClient(OkHttpClient httpClient) {
         TheOkHttp.single().setClient(httpClient);
     }
 
-    public static TheOkClientBuilder init() {
-        TheOkHttp.single();
+    public static TheOkClientBuilder initClient() {
         return new TheOkClientBuilder();
     }
 
     public OkHttpClient getClient() {
-        return okHttpClient;
+        return single().okHttpClient;
     }
 
     public void setClient(OkHttpClient client) {

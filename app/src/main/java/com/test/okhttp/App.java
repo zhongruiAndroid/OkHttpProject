@@ -11,7 +11,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        TheOkHttp.init();
+//        TheOkHttp.initClient().create();
         TheOkHttp.setNetworkHelper(this);
         TheOkHttp.setDebug(BuildConfig.DEBUG);
         TheOkHttp.addIgnoreContentSubType("jpeg");

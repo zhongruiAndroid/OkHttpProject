@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
             @Override
-            public void failure(Exception e) {
+            public void failure(String errorStr,Exception e) {
 
             }
         });
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 showMsg("请求成功");
             }
             @Override
-            public void failure(Exception e) {
+            public void failure(String errorStr,Exception e) {
                 showMsg("请求失败");
                 ivTest.setImageBitmap(null);
             }
