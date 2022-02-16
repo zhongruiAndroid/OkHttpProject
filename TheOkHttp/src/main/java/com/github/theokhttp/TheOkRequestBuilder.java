@@ -102,6 +102,9 @@ public class TheOkRequestBuilder {
     }
 
     public TheOkRequestBuilder method(String method, RequestBody body) {
+        if(method!=null){
+            method=method.toUpperCase();
+        }
         builder.method(method, body);
         return this;
     }
