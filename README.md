@@ -77,7 +77,7 @@ TheOkHttp.postMultipart(body).start(url,callback);
 ### 初始化时
 #### 设置官方Okhttp Client参数(全局client，影响所有不设置setOkHttpClient的Request)
 ```java
-TheOkHttp.init()
+TheOkHttp.initClient()
 	//添加application拦截器
         .addInterceptor()
 	//添加网络拦截器
@@ -95,7 +95,7 @@ TheOkHttp.init()
         .complete();
         
 //或者自行实例化一个client传进来
-TheOkHttp.init(okHttpClient);
+TheOkHttp.initClient(okHttpClient);
 ```
 ### 发送请求时
 #### 设置官方Okhttp Request参数
