@@ -271,7 +271,7 @@ public class TheOkClientBuilder {
         return this;
     }
     public void complete(){
-        TheOkHttp.single().setClient(builder.build());
+        TheOkHttp.single().setSingleClient(builder.build());
     }
     public OkHttpClient create(){
         return builder.build();

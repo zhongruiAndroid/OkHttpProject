@@ -277,7 +277,7 @@ public class TheOkRequestBuilder {
     }
 
     public OkHttpClient getOkHttpClient() {
-        return okHttpClient == null ? TheOkHttp.single().getClient() : okHttpClient;
+        return okHttpClient == null ? TheOkHttp.single().getDefClient() : okHttpClient;
     }
 
     public TheOkRequestBuilder queryParamsMap(Map paramsMap) {

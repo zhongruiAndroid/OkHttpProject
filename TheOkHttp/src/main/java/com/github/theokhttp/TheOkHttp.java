@@ -43,15 +43,18 @@ public class TheOkHttp {
     private boolean isDebug;
 
     private TheOkHttp() {
-        okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(TheOkHttpConfig.HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(TheOkHttpConfig.HTTP_WRITE_TIMEOUT, TimeUnit.SECONDS)
-                .readTimeout(TheOkHttpConfig.HTTP_READ_TIMEOUT, TimeUnit.SECONDS)
-                .addInterceptor(TheOkClientBuilder.appInterceptor).build();
-        TheOkClientManager.get().add(okHttpClient);
+        TheOkClientManager.get().add(getDefClient());
     }
-
-
+    public OkHttpClient getDefClient(){
+        if(okHttpClient==null){
+            okHttpClient = new OkHttpClient.Builder()
+                    .connectTimeout(TheOkHttpConfig.HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                    .writeTimeout(TheOkHttpConfig.HTTP_WRITE_TIMEOUT, TimeUnit.SECONDS)
+                    .readTimeout(TheOkHttpConfig.HTTP_READ_TIMEOUT, TimeUnit.SECONDS)
+                    .addInterceptor(TheOkClientBuilder.appInterceptor).build();
+        }
+        return okHttpClient;
+    }
 
     public static void addIgnoreContentSubType(String contentType) {
         TheOkHttp.single().ignoreContentSubType.add(contentType);
@@ -81,19 +84,20 @@ public class TheOkHttp {
     }
 
     public static void initClient(OkHttpClient httpClient) {
-        TheOkHttp.single().setClient(httpClient);
+        TheOkHttp.single().setSingleClient(httpClient);
     }
 
     public static TheOkClientBuilder initClient() {
         return new TheOkClientBuilder();
     }
 
-    public OkHttpClient getClient() {
-        return single().okHttpClient;
-    }
-
-    public void setClient(OkHttpClient client) {
-        TheOkClientManager.get().remove(okHttpClient);
+    public void setSingleClient(OkHttpClient client) {
+        if(client==null){
+            return;
+        }
+        if(okHttpClient!=null){
+            TheOkClientManager.get().remove(okHttpClient);
+        }
         okHttpClient = client;
         TheOkClientManager.get().add(okHttpClient);
     }
@@ -116,9 +120,6 @@ public class TheOkHttp {
         return TheOkRequestBuilder.newInstance().post(formBody);
     }
 
-    private static <T extends Callback> void buildRequest(Map map, String url, T callback) {
-
-    }
     /*-----------------------------------GET-----------------------------------------*/
 
     public static <T extends Callback> void startGet(Map map, String url, T callback) {
@@ -137,7 +138,7 @@ public class TheOkHttp {
         TheOkRequestBuilder theRequestBuilder = TheOkRequestBuilder.newInstance();
         theRequestBuilder.url(url);
         theRequestBuilder.get();
-        TheOkHttp.single().okHttpClient.newCall(theRequestBuilder.build()).enqueue(callback);
+        TheOkHttp.single().getDefClient().newCall(theRequestBuilder.build()).enqueue(callback);
     }
 
     public static TheOkRequestBuilder get() {
