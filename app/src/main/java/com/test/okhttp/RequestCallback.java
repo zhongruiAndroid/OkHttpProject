@@ -69,8 +69,8 @@ public abstract class RequestCallback<T> extends TheOkHttpCallback<String> {
     }
 
     @Override
-    public void failure(String errorString, Exception e){
-        toError("-1", errorString);
+    public void failure(String result, Exception e){
+        toError("-1", e.getMessage());
     }
 
     public String getMsgFile( ) {
