@@ -1,7 +1,8 @@
 #### 初始化
 ```java
 //必须初始化
-TheOkHttp.init();
+TheOkHttp.initClient().complete();
+或者TheOkHttp.initClient(new OkHttpClient.Builder().build());
 
 //设置debug可以打印请求结果信息(非必须)
 TheOkHttp.setDebug(BuildConfig.DEBUG);
