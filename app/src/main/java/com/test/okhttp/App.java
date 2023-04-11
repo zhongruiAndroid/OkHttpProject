@@ -13,9 +13,9 @@ public class App extends Application {
         super.onCreate();
 //        TheOkHttp.initClient().create();
 //        TheOkHttp.initClient(null);
-        TheOkHttp.initClient().complete();
+        TheOkHttp.initClient(null);
         TheOkHttp.setNetworkHelper(this);
-        TheOkHttp.setDebug(BuildConfig.DEBUG);
+        TheOkHttp.setDebug(true);
         TheOkHttp.addIgnoreContentSubType("jpeg");
     }
 }

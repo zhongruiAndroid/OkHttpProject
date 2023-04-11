@@ -207,7 +207,7 @@ public class TheOkRequestBuilder {
                 if (retryCount > 0) {
                     retryNum[0]++;
                     if (retryNum[0] <= retryCount) {
-                        getOkHttpClient().newCall(requestBuild).equals(this);
+                        getOkHttpClient().newCall(requestBuild);
                     } else {
                         callback.onFailure(call, e);
                     }

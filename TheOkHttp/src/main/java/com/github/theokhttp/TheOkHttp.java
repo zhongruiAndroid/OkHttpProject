@@ -87,8 +87,8 @@ public class TheOkHttp {
         TheOkHttp.single().setSingleClient(httpClient);
     }
 
-    public static TheOkClientBuilder initClient() {
-        return new TheOkClientBuilder();
+    public static void initClient() {
+        new TheOkClientBuilder().complete();
     }
 
     public void setSingleClient(OkHttpClient client) {
