@@ -96,7 +96,7 @@ public abstract class TheOkHttpCallback<T> implements Callback {
             close(response);
             failure(s, new Exception(onHttpServerError()));
             return;
-        } else if (httpCode != 200) {
+        } else if (!response.isSuccessful()) {
             String s = giveString(response.body());
             String message = response.message();
             close(response);

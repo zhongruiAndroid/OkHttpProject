@@ -30,7 +30,7 @@ TheOkHttp.get(map).start(url,new TheOkHttpCallback<String>() {
        
    }
    @Override
-   public void failure(Exception e) {
+   public void failureDATA(Exception e) {
 
    }
 });
@@ -55,7 +55,7 @@ TheOkHttp.post(map).start(url,new TheOkHttpCallback<String>() {
        
    }
    @Override
-   public void failure(Exception e) {
+   public void failureDATA(Exception e) {
 
    }
 });
@@ -140,7 +140,7 @@ TheOkHttp
 
       }
       @Override
-      public void failure(Exception e) {
+      public void failureDATA(Exception e) {
 
       }
   });

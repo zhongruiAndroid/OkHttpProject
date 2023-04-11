@@ -2,8 +2,6 @@ package com.github.theokhttp;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 
 import org.json.JSONObject;
 
@@ -13,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
@@ -45,8 +44,9 @@ public class TheOkHttp {
     private TheOkHttp() {
         TheOkClientManager.get().add(getDefClient());
     }
-    public OkHttpClient getDefClient(){
-        if(okHttpClient==null){
+
+    public OkHttpClient getDefClient() {
+        if (okHttpClient == null) {
             okHttpClient = new OkHttpClient.Builder()
                     .connectTimeout(TheOkHttpConfig.HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                     .writeTimeout(TheOkHttpConfig.HTTP_WRITE_TIMEOUT, TimeUnit.SECONDS)
@@ -69,12 +69,14 @@ public class TheOkHttp {
     }
 
     public static void setDebug(boolean debug) {
-        setDebug(debug,"TheOkHttp==");
+        setDebug(debug, "TheOkHttp==");
     }
-    public static void setDebug(boolean debug,String logTag) {
+
+    public static void setDebug(boolean debug, String logTag) {
         single().isDebug = debug;
-        LG.TAG=logTag;
+        LG.TAG = logTag;
     }
+
     public static boolean isDebug() {
         return single().isDebug;
     }
@@ -92,10 +94,10 @@ public class TheOkHttp {
     }
 
     public void setSingleClient(OkHttpClient client) {
-        if(client==null){
+        if (client == null) {
             return;
         }
-        if(okHttpClient!=null){
+        if (okHttpClient != null) {
             TheOkClientManager.get().remove(okHttpClient);
         }
         okHttpClient = client;
@@ -120,7 +122,28 @@ public class TheOkHttp {
         return TheOkRequestBuilder.newInstance().post(formBody);
     }
 
-    /*-----------------------------------GET-----------------------------------------*/
+    /*-----------------------------------同步GET-----------------------------------------*/
+    public static <T> TheOkResponse<T> startGet(Map map, String url) {
+        Uri.Builder uri = new Uri.Builder();
+        uri.encodedPath(url);
+        if (map != null) {
+            Set<String> keySet = map.keySet();
+            for (String key : keySet) {
+                uri.appendQueryParameter(key, String.valueOf(map.get(key)));
+            }
+        }
+        return startGet(uri.toString());
+    }
+
+    public static <T> TheOkResponse<T> startGet(String url) {
+        TheOkRequestBuilder theRequestBuilder = TheOkRequestBuilder.newInstance();
+        theRequestBuilder.url(url);
+        theRequestBuilder.get();
+
+        Call call = TheOkHttp.single().getDefClient().newCall(theRequestBuilder.build());
+        return TheOkResponse.execute(call);
+    }
+    /*-----------------------------------异步GET-----------------------------------------*/
 
     public static <T extends Callback> void startGet(Map map, String url, T callback) {
         Uri.Builder uri = new Uri.Builder();

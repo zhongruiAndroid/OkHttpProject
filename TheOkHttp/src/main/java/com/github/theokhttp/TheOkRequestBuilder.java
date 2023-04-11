@@ -225,12 +225,11 @@ public class TheOkRequestBuilder {
         });
     }
 
-    public TheOkResponse execute(String url) {
-        return execute(url, true);
+    public <T>TheOkResponse<T> execute(String url) {
+        return execute(url, false);
     }
 
-    public TheOkResponse execute(String url, boolean needCloneResponseString) {
-        TheOkResponse theOkResponse = new TheOkResponse();
+    public <T>TheOkResponse<T> execute(String url, boolean needCloneResponseString) {
         String newUrl = url;
         if (queryParamsMap != null) {
             Uri.Builder uri = new Uri.Builder();
@@ -242,32 +241,8 @@ public class TheOkRequestBuilder {
             }
             newUrl = uri.toString();
         }
-        try {
-            Response execute = getOkHttpClient().newCall(url(newUrl).build()).execute();
-            theOkResponse.response = execute;
-            int code = execute.code();
-            theOkResponse.statusCode = code;
-            ResponseBody body = execute.body();
-            if (body != null) {
-                theOkResponse.body = body;
-                if (code == 200) {
-                    if (needCloneResponseString) {
-                        BufferedSource source = body.source();
 
-                        source.request(Long.MAX_VALUE);
-                        Buffer buffer = source.getBuffer();
-                        theOkResponse.result = buffer.clone().readString(Charset.forName("UTF-8"));
-
-                    } else {
-                        theOkResponse.result = body.string();
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            theOkResponse.exception = e;
-        }
-        return theOkResponse;
+        return TheOkResponse.execute(getOkHttpClient().newCall(url(newUrl).build()),needCloneResponseString);
     }
 
     public TheOkRequestBuilder setOkHttpClient(OkHttpClient okHttpClient) {
