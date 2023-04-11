@@ -20,7 +20,7 @@ public class TheOkHttpNetworkUtils {
     @SuppressLint("MissingPermission")
     public static boolean isNetworkAvailable(Context context) {
         if(context==null){
-            throw new IllegalArgumentException("context is null,please call NetworkUtils.init(this) in application");
+            throw new IllegalArgumentException("context is null,please call TheOkHttpNetworkUtils.init(this) in application");
         }
         ConnectivityManager cm =(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
