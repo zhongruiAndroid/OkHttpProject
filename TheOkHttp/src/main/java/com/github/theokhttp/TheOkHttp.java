@@ -123,7 +123,7 @@ public class TheOkHttp {
     }
 
     /*-----------------------------------同步GET-----------------------------------------*/
-    public static <T> TheOkResponse<T> startGet(Map map, String url) {
+    public static <T> TheOkResponse<T> executeGet(Map map, String url) {
         Uri.Builder uri = new Uri.Builder();
         uri.encodedPath(url);
         if (map != null) {
@@ -132,10 +132,10 @@ public class TheOkHttp {
                 uri.appendQueryParameter(key, String.valueOf(map.get(key)));
             }
         }
-        return startGet(uri.toString());
+        return executeGet(uri.toString());
     }
 
-    public static <T> TheOkResponse<T> startGet(String url) {
+    public static <T> TheOkResponse<T> executeGet(String url) {
         TheOkRequestBuilder theRequestBuilder = TheOkRequestBuilder.newInstance();
         theRequestBuilder.url(url);
         theRequestBuilder.get();
